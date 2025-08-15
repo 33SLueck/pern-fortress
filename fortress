@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# PERN-Fortress CLI Script
+# This script allows you to run 'fortress' commands locally without global installation
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CLI_DIR="$SCRIPT_DIR/cli"
+
+# Check if CLI is built
+if [ ! -f "$CLI_DIR/dist/index.js" ]; then
+    echo "🏗️  Building CLI first..."
+    cd "$CLI_DIR" && npm run build
+    if [ $? -ne 0 ]; then
+        echo "❌ Failed to build CLI"
+        exit 1
+    fi
+fi
+
+# Run the CLI with all passed arguments
+cd "$SCRIPT_DIR" && node "$CLI_DIR/dist/index.js" "$@"

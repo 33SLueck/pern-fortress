@@ -46,6 +46,9 @@ Ein modernes, flexibles PERN Stack Monorepo-Template mit TypeScript, Docker und 
 - 📦 **Dependency Management** mit Dependabot
 - 🧪 **Testing Setup** (Vitest, React Testing Library)
 - 🎯 **Production Ready** mit Health Checks
+- 🏰 **PERN-Fortress CLI** - Automatischer Code Generator
+- 🔨 **Auto-Generated CRUD** - Routes, Models, Components mit einem Befehl
+- 🛡️ **Smart Safety Checks** - Verhindert versehentliches Überschreiben
 
 ## 🏗️ Tech Stack
 
@@ -64,8 +67,19 @@ Ein modernes, flexibles PERN Stack Monorepo-Template mit TypeScript, Docker und 
 - **PostgreSQL 16** Database
 - **Prisma ORM** für Type-safe Database Access
 - **Prisma Studio** für Database Management
+- **Express-Validator** für Input-Validierung
+- **Supertest** für API Testing
+- **Vitest** für Backend Testing
+- **Helmet** für Security Headers
+- **CORS** für Cross-Origin Resource Sharing
+- **Express Rate Limit** für DDoS Protection
+- **Swagger/OpenAPI** für API Dokumentation
+- **OpenAPI 3.0** Specification Support
 - RESTful API Architektur
 - Health Check Endpoints
+- Automatische Route-Registrierung
+- Structured Validation Middleware
+- Production-Ready Security
 
 ### Dev Tools
 
@@ -138,6 +152,7 @@ pern-monorepo-template/
 ├── README.md
 ├── package.json              # Root package mit Workspace-Scripts
 ├── docker-compose.yml        # Docker Compose für alle Services
+├── fortress                  # CLI Wrapper Script für einfachen Zugriff
 ├── .github/
 │   ├── workflows/
 │   │   └── ci.yml           # GitHub Actions Pipeline
@@ -149,22 +164,44 @@ pern-monorepo-template/
 ├── .vscode/                 # VS Code Settings
 │   ├── settings.json       # Editor Config + Action Buttons
 │   └── tasks.json          # Build Tasks
+├── cli/                     # 🏰 Fortress CLI Generator
+│   ├── src/
+│   │   ├── index.ts        # CLI Entry Point
+│   │   ├── generators/     # Code Generators
+│   │   │   ├── route.ts    # Backend Route Generator
+│   │   │   ├── model.ts    # Prisma Model Generator
+│   │   │   └── component.ts # React Component Generator
+│   │   └── utils/
+│   ├── templates/          # Handlebars Templates
+│   ├── package.json
+│   └── tsconfig.json
 ├── frontend/                # React Frontend Workspace
 │   ├── Dockerfile           # Multi-stage Build für Vite
 │   ├── nginx.conf           # NGINX Config für SPA-Routing
 │   ├── src/
-│   │   ├── components/
+│   │   ├── components/      # Generated & Manual Components
 │   │   ├── pages/
 │   │   └── __tests__/
 │   ├── package.json
 │   ├── vite.config.ts
+│   ├── vitest.config.ts     # Frontend Testing Config
 │   ├── eslint.config.js
 │   └── tsconfig.json
 ├── backend/                 # Express Backend Workspace
 │   ├── Dockerfile           # Multi-stage Build für Node.js
 │   ├── src/
-│   │   └── index.ts
+│   │   ├── index.ts        # Express App mit Auto-Route-Registration
+│   │   ├── routes/         # Generated CRUD Routes
+│   │   ├── middleware/
+│   │   │   └── validation/ # Structured Validation Middleware
+│   │   │       ├── index.ts # Auto-Export für alle Validations
+│   │   │       └── *.ts    # Generated Validation Rules
+│   │   └── __tests__/      # Backend Tests (Vitest + Supertest)
+│   ├── prisma/
+│   │   ├── schema.prisma   # Auto-Extended Database Schema
+│   │   └── seeds/          # Generated Seed Files
 │   ├── package.json
+│   ├── vitest.config.ts    # Backend Testing Config
 │   ├── eslint.config.js
 │   └── tsconfig.json
 ├── eslint.config.js         # Root ESLint Config
@@ -174,11 +211,177 @@ pern-monorepo-template/
 
 ---
 
+## 🏰 PERN-Fortress CLI Generator
+
+Der integrierte **Fortress CLI** automatisiert die Erstellung von Backend-Routes, Prisma-Models und React-Components mit einem einzigen Befehl. Alle generierten Komponenten sind vollständig typisiert und production-ready.
+
+### ⚡ Quick CLI Start
+
+```bash
+# CLI verfügbar machen
+./fortress --help
+
+# Interaktiver Generator (empfohlen für Einsteiger)
+./fortress generate
+
+# Direkte Befehle
+./fortress generate:route products    # Backend CRUD Route
+./fortress generate:model Product     # Prisma Model + Migration
+./fortress generate:component ProductCard  # React Component
+```
+
+### 🎯 CLI Features
+
+- **🔄 Automatische Integration**: Routes werden automatisch in `backend/src/index.ts` registriert
+- **🛡️ Input Validierung**: Express-validator mit automatischen Validation-Middleware
+- **🧪 Tests inklusive**: Vitest Tests für alle generierten Routes und Components
+- **📝 TypeScript**: Vollständig typisierte API-Responses und Component-Props
+- **🎨 Styling**: CSS Modules und Storybook Stories für Components
+- **🔒 Safety First**: Prüft auf existierende Dateien und verhindert versehentliches Überschreiben
+
+### 🔨 Route Generator
+
+Erstellt vollständige CRUD-Routes mit automatischer Registrierung:
+
+```bash
+# Basis Route mit Standard CRUD
+./fortress generate:route users
+
+# Route mit benutzerdefinierten HTTP-Methoden
+./fortress generate:route products --methods "GET,POST,PUT"
+
+# Route ohne Validierung
+./fortress generate:route simple --no-validation
+
+# Bestehende Route überschreiben
+./fortress generate:route users --force
+```
+
+**Generiert automatisch:**
+
+- ✅ Express Router mit CRUD Endpoints (`GET`, `POST`, `PUT`, `DELETE`)
+- ✅ Input Validierung mit express-validator
+- ✅ TypeScript Interfaces für Request/Response
+- ✅ Vitest Tests mit Supertest
+- ✅ Automatische Route-Registrierung in `backend/src/index.ts`
+- ✅ Prisma Model Integration
+- ✅ OpenAPI/Swagger Documentation (JSDoc)
+- ✅ Security Headers (Helmet, CORS)
+- ✅ Rate Limiting Configuration
+- ✅ Error Handling Middleware
+
+### 🗄️ Model Generator
+
+Erstellt Prisma Models mit Migration und Seeding:
+
+```bash
+# Basis Model
+./fortress generate:model User
+
+# Model mit benutzerdefinierten Feldern
+./fortress generate:model Product --fields "name:string,price:float,active:boolean"
+
+# Model ohne Migration
+./fortress generate:model Simple --no-migration
+
+# Model ohne Seed-Daten
+./fortress generate:model Basic --no-seed
+```
+
+**Generiert automatisch:**
+
+- ✅ Prisma Schema Definition
+- ✅ TypeScript Types
+- ✅ Seed-Dateien mit Beispieldaten
+- ✅ Migration Scripts
+- ✅ Automatische Relation-Hints
+
+### 🧩 Component Generator
+
+Erstellt React Components mit TypeScript und Tests:
+
+```bash
+# React Functional Component
+./fortress generate:component UserCard
+
+# Component in spezifischem Verzeichnis
+./fortress generate:component ProfileCard --directory "src/features/profile"
+
+# Component ohne Tests
+./fortress generate:component SimpleCard --no-tests
+
+# Component ohne CSS Modules
+./fortress generate:component BasicCard --no-styles
+```
+
+**Generiert automatisch:**
+
+- ✅ TypeScript React Component mit Props Interface
+- ✅ CSS Modules für Styling
+- ✅ Vitest Tests mit React Testing Library
+- ✅ Storybook Stories
+- ✅ Index-Datei für saubere Imports
+- ✅ Responsive Design Patterns
+
+### 🛡️ Safety Features
+
+Alle Generatoren prüfen auf bereits existierende Dateien:
+
+```bash
+# Sicherheitscheck - verhindert Überschreiben
+./fortress generate:component UserCard
+# ❌ Komponente "UserCard" existiert bereits
+
+# Überschreiben erzwingen
+./fortress generate:component UserCard --force
+# ✅ Komponente 'UserCard' erfolgreich generiert!
+```
+
+### 📁 Generated Code Structure
+
+```bash
+# Nach ./fortress generate:route products
+backend/src/
+├── routes/
+│   └── products.ts              # CRUD Route
+├── middleware/validation/
+│   ├── products.ts              # Input Validation
+│   └── index.ts                 # Auto-export
+└── __tests__/
+    └── products.test.ts         # Route Tests
+
+# Nach ./fortress generate:component ProductCard
+frontend/src/components/ProductCard/
+├── ProductCard.tsx              # React Component
+├── ProductCard.module.css       # CSS Modules
+├── ProductCard.test.tsx         # Component Tests
+├── ProductCard.stories.tsx      # Storybook Stories
+└── index.ts                     # Clean Exports
+```
+
+### 🔧 CLI Verfügbarkeit
+
+Der Fortress CLI ist auf mehrere Weise verfügbar:
+
+```bash
+# 1. Direkter Aufruf (empfohlen)
+./fortress generate:route users
+
+# 2. Via npm Script
+npm run fortress generate:route users
+
+# 3. Via npx (Development)
+npx ts-node cli/src/index.ts generate:route users
+```
+
+---
+
 ## 🛠️ Development
 
 ### Wichtige Scripts (Root)
 
 ```bash
+# Development
 npm run dev              # Startet Frontend & Backend (Entwicklung)
 npm run build            # Build für alle Workspaces
 npm run lint             # Lint für alle Workspaces
@@ -186,6 +389,18 @@ npm run lint:fix         # Lint + Auto-fix für alle Workspaces
 npm run test             # Tests für alle Workspaces
 npm run format           # Prettier Formatierung
 npm run type-check       # TypeScript Checks
+
+# Code Generation (Fortress CLI)
+npm run fortress         # Fortress CLI (via npx ts-node)
+npm run generate         # Interaktiver Generator-Wizard
+./fortress               # Direkter CLI-Aufruf (empfohlen)
+
+# Fortress CLI Commands
+./fortress generate                    # Interaktiver Wizard
+./fortress generate:route <name>       # Backend CRUD Route
+./fortress generate:model <name>       # Prisma Model + Migration
+./fortress generate:component <name>   # React Component
+./fortress --help                     # Vollständige Hilfe
 ```
 
 ### Frontend Scripts
@@ -270,22 +485,113 @@ npm run backend:test           # Run Backend Tests
 - `GET /health` → Basic Health Status
 - `GET /api/health` → Detailed API Health Check
 
-### Development URLs
-
-- **Frontend Development**: http://localhost:5176
-- **Backend Development**: http://localhost:3006
-- **Frontend Production** (Docker): http://localhost:5176
-- **Backend Production** (Docker): http://localhost:3006
-
 ### API Documentation
 
-- Erweitere die API-Dokumentation nach Bedarf
-- Swagger/OpenAPI Integration möglich
-- Postman Collections empfohlen
+- **Swagger UI**: <http://localhost:3006/api-docs> (Development)
+- **OpenAPI 3.0** Specification verfügbar
+- **Automatische API-Docs** aus JSDoc-Kommentaren
+- **Interactive Testing** direkt in Swagger UI
+- **JSON Schema Validation** für Request/Response
+
+### Development URLs
+
+- **Frontend Development**: <http://localhost:5176>
+- **Backend Development**: <http://localhost:3006>
+- **API Documentation**: <http://localhost:3006/api-docs>
+- **Frontend Production** (Docker): <http://localhost:5176>
+- **Backend Production** (Docker): <http://localhost:3006>
+
+### Security Features
+
+- **Helmet.js**: Security Headers (XSS, CSRF, etc.)
+- **CORS**: Konfigurierte Cross-Origin Resource Sharing
+- **Rate Limiting**: DDoS Protection mit Express Rate Limit
+- **Input Validation**: Express-validator für alle Endpoints
+- **Type Safety**: TypeScript für Request/Response Typen
+
+### API Documentation Best Practices
+
+- **JSDoc Comments** in allen Route-Definitionen
+- **OpenAPI Schemas** für Request/Response Models
+- **Error Response Documentation** mit HTTP Status Codes
+- **Authentication Documentation** (falls implementiert)
+- **Rate Limit Information** in API Responses
 
 ---
 
-## �️ Database & Prisma
+## 🛡️ Security & Best Practices
+
+### Production-Ready Security
+
+#### Helmet.js Configuration
+
+```javascript
+// Automatisch konfiguriert in express App
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", 'data:', 'https:'],
+      },
+    },
+    crossOriginEmbedderPolicy: false,
+  })
+);
+```
+
+#### CORS Configuration
+
+```javascript
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:5176',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
+```
+
+#### Rate Limiting
+
+```javascript
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 Minuten
+  max: 100, // Limit pro IP
+  message: 'Too many requests from this IP',
+});
+
+app.use('/api/', limiter);
+```
+
+### Environment Security
+
+- ✅ **Environment Variables** für alle sensiblen Daten
+- ✅ **TypeScript** für Type Safety
+- ✅ **Input Validation** mit Express-Validator
+- ✅ **Error Handling** ohne sensitive Informationen
+- ✅ **Security Headers** via Helmet.js
+- ✅ **CORS Protection** für Cross-Origin Requests
+
+### Production Deployment Checklist
+
+- [ ] Environment Variables konfiguriert (.env files niemals committen)
+- [ ] HTTPS SSL Zertifikate installiert
+- [ ] Rate Limiting für Production angepasst
+- [ ] Database Connection Pool optimiert
+- [ ] Logging and Monitoring eingerichtet
+- [ ] Error Tracking (z.B. Sentry) konfiguriert
+- [ ] Backup Strategy implementiert
+- [ ] Health Checks für Load Balancer aktiviert
+
+---
+
+## 🗄️ Database & Prisma
 
 ### PostgreSQL mit Prisma ORM
 
@@ -310,6 +616,17 @@ docker-compose run --rm backend npx prisma db seed
 # 1. Schema in backend/prisma/schema.prisma ändern
 # 2. Migration ausführen
 docker-compose run --rm backend npx prisma migrate dev --name "add_user_table"
+
+
+```
+
+oder
+
+```bash
+
+docker exec pern-fortress-backend-1 npx prisma migrate dev --name init
+
+
 ```
 
 **Production Migrations:**
@@ -506,12 +823,34 @@ docker-compose up -v ./data:/app/data --build
 
 ### Production Dependencies
 
+#### Core Stack
+
 - **React 19.1+** (Latest with Concurrent Features)
 - **Express 5.1+** (Modern HTTP Framework)
 - **TypeScript 5.9+** (Type Safety & Performance)
 - **PostgreSQL 16+** (Reliable Database)
 - **Prisma 6.14+** (Type-safe ORM)
-- **Tailwind CSS 4+** (Modern CSS Framework)### Development Tools
+- **Tailwind CSS 4+** (Modern CSS Framework)
+
+#### Security & API Documentation
+
+- **Helmet.js 8.0+** (Security Headers & XSS Protection)
+- **CORS 2.8+** (Cross-Origin Resource Sharing)
+- **Express Rate Limit 7.5+** (DDoS Protection)
+- **Express-Validator 7.2+** (Input Validation)
+- **Swagger UI Express 5.0+** (API Documentation)
+- **OpenAPI Types 12.1+** (Type-safe API Schemas)
+
+#### Development & Testing
+
+- **Vitest 3.5+** (Fast Testing Framework)
+- **Supertest 7.1+** (API Testing)
+- **MSW 2.9+** (Mock Service Worker)
+- **ESLint 9.4+** (Code Quality)
+- **Prettier 3.4+** (Code Formatting)
+- **Husky 9.1+** (Git Hooks)
+
+### Development Tools
 
 - **ESLint 9.33+** (Code Linting mit Flat Config)
 - **Prettier 3.4+** (Code Formatting)

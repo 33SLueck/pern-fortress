@@ -7,6 +7,10 @@ services:
       - .env
     depends_on:
       - db
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./backend/prisma:/app/prisma:ro # Read-only mount für Schema-Änderungen
 
   frontend:
     build: ./frontend
@@ -27,12 +31,15 @@ services:
 
   prisma-studio:
     build: ./backend
-    command: npx prisma studio --port 5555
+    command: npx prisma studio --port 5555 --hostname 0.0.0.0
     env_file:
       - .env
     ports:
       - '5556:5555'
     depends_on:
       - db
+    volumes:
+      - ./backend/prisma:/app/prisma:ro
+
 volumes:
   postgres_data:
