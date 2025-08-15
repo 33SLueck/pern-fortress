@@ -16,8 +16,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install root dependencies
         run: npm ci
@@ -37,8 +37,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -58,6 +58,22 @@ jobs:
   backend:
     needs: setup
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: fortress_user
+          POSTGRES_PASSWORD: fortress_password
+          POSTGRES_DB: fortress_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    env:
+      DATABASE_URL: 'postgresql://fortress_user:fortress_password@localhost:5432/fortress_test'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -65,11 +81,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Generate Prisma client
+        run: npm run backend:db:generate
+
+      - name: Push database schema
+        run: npm run backend:db:push
 
       - name: Lint backend
         run: npm run backend:lint
@@ -80,6 +102,22 @@ jobs:
   integration:
     needs: [frontend, backend]
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: fortress_user
+          POSTGRES_PASSWORD: fortress_password
+          POSTGRES_DB: fortress_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    env:
+      DATABASE_URL: 'postgresql://fortress_user:fortress_password@localhost:5432/fortress_test'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -87,11 +125,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Generate Prisma client
+        run: npm run backend:db:generate
+
+      - name: Push database schema
+        run: npm run backend:db:push
 
       - name: Build all projects
         run: |
@@ -102,4 +146,4 @@ jobs:
         run: |
           npm run backend:dev &
           sleep 10
-          curl -f http://localhost:3000/health || exit 1
+          curl -f http://localhost:3000/api/v1/health || exit 1
