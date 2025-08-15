@@ -1,0 +1,75 @@
+{
+  "name": "pern-docker-fortress",
+  "version": "1.0.0",
+  "description": "PERN Stack Monorepo with Docker",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "postinstall": "husky",
+    "frontend:dev": "npm run dev --workspace=frontend",
+    "frontend:build": "npm run build --workspace=frontend",
+    "frontend:test": "npm run test --workspace=frontend",
+    "frontend:test:unit": "npm run test:unit --workspace=frontend",
+    "frontend:lint": "npm run lint --workspace=frontend",
+    "frontend:type-check": "npm run type-check --workspace=frontend",
+    "frontend:format": "npm run format --workspace=frontend",
+    "frontend:format:check": "npm run format:check --workspace=frontend",
+    "backend:dev": "npm run dev --workspace=backend",
+    "backend:build": "npm run build --workspace=backend",
+    "backend:start": "npm run start --workspace=backend",
+    "backend:lint": "npm run lint --workspace=backend",
+    "backend:format": "npm run format --workspace=backend",
+    "backend:format:check": "npm run format:check --workspace=backend",
+    "dev": "concurrently \"npm run backend:dev\" \"npm run frontend:dev\"",
+    "build": "npm run backend:build && npm run frontend:build",
+    "lint": "npm run frontend:lint && npm run backend:lint",
+    "lint:check": "npm run frontend:lint && npm run backend:lint",
+    "format": "npm run frontend:format && npm run backend:format",
+    "format:check": "npm run frontend:format:check && npm run backend:format:check",
+    "type-check:frontend": "npm run type-check --workspace=frontend",
+    "type-check:backend": "npm run type-check --workspace=backend",
+    "type-check": "npm run type-check:frontend && npm run type-check:backend",
+    "test:frontend": "npm run test --workspace=frontend",
+    "test:backend": "npm run test --workspace=backend",
+    "test": "npm run test:frontend && npm run test:backend"
+  },
+  "keywords": [
+    "pern",
+    "monorepo",
+    "docker",
+    "typescript"
+  ],
+  "author": "33SLueck",
+  "license": "MIT",
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "commitizen": "^4.3.1",
+    "concurrently": "^9.0.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
+    "prettier": "^3.4.2"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "lint-staged": {
+    "frontend/**/*.{ts,tsx}": [
+      "npm run frontend:lint -- --fix",
+      "npm run frontend:format"
+    ],
+    "backend/**/*.{ts,js}": [
+      "npm run backend:lint -- --fix",
+      "npm run backend:format"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  }
+}

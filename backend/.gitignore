@@ -1,0 +1,29 @@
+
+# Build Output
+dist/
+build/
+
+# Prisma Generated Files
+/src/generated/prisma
+
+# TypeScript
+*.tsbuildinfo
+
+# Logs
+*.log
+logs/
+
+# Environment variables (local overrides)
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+tmp/
+temp/

@@ -1,0 +1,104 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "typescript.preferences.includePackageJsonAutoImports": "auto",
+  "typescript.suggest.autoImports": true,
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/coverage": true,
+    "**/.git": true
+  },
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "typescriptreact",
+    "javascriptreact"
+  ],
+  "eslint.workingDirectories": ["frontend", "backend"],
+  "actionButtons": {
+    "reloadButton": "🔄",
+    "commands": [
+      {
+        "name": "🚀 Dev Both",
+        "color": "#00ff00",
+        "singleInstance": true,
+        "command": "npm run dev",
+        "tooltip": "Start Frontend & Backend"
+      },
+      {
+        "name": "🎯 Frontend",
+        "color": "#61dafb",
+        "singleInstance": true,
+        "command": "npm run frontend:dev",
+        "tooltip": "Start Frontend Only"
+      },
+      {
+        "name": "⚙️ Backend",
+        "color": "#a855f7",
+        "singleInstance": true,
+        "command": "npm run backend:dev",
+        "tooltip": "Start Backend Only"
+      },
+      {
+        "name": "🐳 Docker Up",
+        "color": "#00ff00",
+        "singleInstance": true,
+        "command": "docker-compose up --build",
+        "tooltip": "Docker up and build"
+      },
+      {
+        "name": "🐋 Docker Down",
+        "color": "#ff0000",
+        "singleInstance": true,
+        "command": "docker-compose down",
+        "tooltip": "Stop and remove containers"
+      },
+      {
+        "name": "⚡ QA All",
+        "color": "#ffff00",
+        "command": "npm run type-check && npm run lint && npm run format:check",
+        "tooltip": "Run All Quality Checks"
+      },
+      {
+        "name": "🧪 Test All",
+        "color": "#00ffff",
+        "command": "npm run test",
+        "tooltip": "Run All Tests"
+      },
+      {
+        "name": "🏗️ Build All",
+        "color": "#0088ff",
+        "command": "npm run build",
+        "tooltip": "Build Both Apps"
+      },
+      {
+        "name": "✨ Format All",
+        "color": "#ffffff",
+        "command": "npm run format",
+        "tooltip": "Format All Code"
+      },
+      {
+        "name": "🔧 Lint All",
+        "color": "#ff8800",
+        "command": "npm run lint",
+        "tooltip": "Lint All Code"
+      },
+      {
+        "name": "� Type Check",
+        "color": "#3178c6",
+        "command": "npm run type-check",
+        "tooltip": "TypeScript Check Both"
+      },
+      {
+        "name": "📝 Commit",
+        "color": "#88ff00",
+        "command": "npx cz",
+        "tooltip": "Guided Commit (Commitizen)"
+      },
+    ]
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  }
+}

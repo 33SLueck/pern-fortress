@@ -1,0 +1,98 @@
+version: 2
+updates:
+  # Root dependencies (monorepo tools)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "monorepo"
+    reviewers:
+      - "33SLueck"
+    assignees:
+      - "33SLueck"
+
+  # Frontend dependencies
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "frontend"
+    reviewers:
+      - "33SLueck"
+    assignees:
+      - "33SLueck"
+    groups:
+      react:
+        patterns:
+          - "react*"
+          - "@types/react*"
+      typescript:
+        patterns:
+          - "typescript*"
+          - "@typescript-eslint/*"
+      vite:
+        patterns:
+          - "vite*"
+          - "@vitejs/*"
+
+  # Backend dependencies
+  - package-ecosystem: "npm"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "backend"
+    reviewers:
+      - "33SLueck"
+    assignees:
+      - "33SLueck"
+    groups:
+      express:
+        patterns:
+          - "express*"
+          - "@types/express*"
+      typescript:
+        patterns:
+          - "typescript*"
+          - "@types/*"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "github-actions"
+    reviewers:
+      - "33SLueck"
+    assignees:
+      - "33SLueck"

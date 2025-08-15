@@ -1,0 +1,38 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - '3006:3000'
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    ports:
+      - '5176:80'
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:16-alpine
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - '5436:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  prisma-studio:
+    build: ./backend
+    command: npx prisma studio --port 5555
+    env_file:
+      - .env
+    ports:
+      - '5556:5555'
+    depends_on:
+      - db
+volumes:
+  postgres_data:
