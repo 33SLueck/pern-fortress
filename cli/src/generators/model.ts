@@ -3,6 +3,8 @@ import path from 'path';
 import chalk from 'chalk';
 import Handlebars from 'handlebars';
 import pluralize from 'pluralize';
+import readline from 'readline';
+import { execSync } from 'child_process';
 
 export interface ModelOptions {
   fields?: string;
@@ -73,9 +75,7 @@ Handlebars.registerHelper('isString', function (value) {
   return typeof value === 'string';
 });
 
-function parseFields(
-  fieldsString: string
-): Array<{
+function parseFields(fieldsString: string): Array<{
   name: string;
   type: string;
   required: boolean;
@@ -254,18 +254,61 @@ export async function generateModel(
     console.log(chalk.green(`  ✓ Seed-Datei erstellt: ${seedPath}`));
   }
 
-  // Migration anzeigen (wird manuell ausgeführt)
+  // Migration und Prisma Client automatisch ausführen? (Optional)
   if (migration) {
-    console.log(chalk.yellow(`\n💡 Nächste Schritte:`));
-    console.log(chalk.gray(`  1. Migration erstellen:`));
-    console.log(
-      chalk.gray(`     npx prisma migrate dev --name "add-${tableName}"`)
-    );
-    console.log(chalk.gray(`  2. Prisma Client generieren:`));
-    console.log(chalk.gray(`     npx prisma generate`));
-    if (seed) {
-      console.log(chalk.gray(`  3. Seed-Daten einfügen:`));
-      console.log(chalk.gray(`     npx prisma db seed`));
-    }
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    await new Promise<void>((resolve) => {
+      rl.question(
+        chalk.yellow(
+          `\n❓ Soll automatisch eine Migration (create-only) und prisma generate ausgeführt werden? (ja/nein): `
+        ),
+        (answer) => {
+          if (
+            answer.trim().toLowerCase() === 'ja' ||
+            answer.trim().toLowerCase() === 'j'
+          ) {
+            try {
+              console.log(chalk.blue(`\n🚀 Starte Migration (create-only)...`));
+              execSync(
+                `npx prisma migrate dev --create-only --name "add-${tableName}"`,
+                { stdio: 'inherit', cwd: backendPath }
+              );
+              console.log(chalk.green('✓ Migration erfolgreich erstellt.'));
+              console.log(chalk.blue('🚀 Generiere Prisma Client...'));
+              execSync('npx prisma generate', {
+                stdio: 'inherit',
+                cwd: backendPath,
+              });
+              console.log(chalk.green('✓ Prisma Client generiert.'));
+            } catch (err) {
+              console.log(
+                chalk.red(
+                  'Fehler beim Ausführen der Migration oder beim Generieren des Prisma Clients.'
+                )
+              );
+            }
+          } else {
+            console.log(chalk.yellow(`\n💡 Nächste Schritte:`));
+            console.log(chalk.gray(`  1. Migration erstellen:`));
+            console.log(
+              chalk.gray(
+                `     npx prisma migrate dev --create-only --name "add-${tableName}"`
+              )
+            );
+            console.log(chalk.gray(`  2. Prisma Client generieren:`));
+            console.log(chalk.gray(`     npx prisma generate`));
+            if (seed) {
+              console.log(chalk.gray(`  3. Seed-Daten einfügen:`));
+              console.log(chalk.gray(`     npx prisma db seed`));
+            }
+          }
+          rl.close();
+          resolve();
+        }
+      );
+    });
   }
 }

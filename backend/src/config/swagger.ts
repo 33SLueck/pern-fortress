@@ -54,18 +54,6 @@ import {
   getUserByIdHandler,
   createUserHandler,
 } from '../routes/users';
-import {
-  getProductsHandler,
-  getProductsByIdHandler,
-  createProductsHandler,
-} from '../routes/products';
-import {
-  getBookHandler,
-  getBookByIdHandler,
-  createBookHandler,
-  updateBookHandler,
-  deleteBookHandler,
-} from '../routes/book';
 
 const swaggerDefinition: SwaggerDefinition = {
   openapi: '3.0.0',
@@ -78,6 +66,7 @@ const swaggerDefinition: SwaggerDefinition = {
       name: '33SLueck',
       email: 'your-email@example.com',
     },
+
     license: {
       name: 'MIT',
       url: 'https://opensource.org/licenses/MIT',
@@ -87,6 +76,10 @@ const swaggerDefinition: SwaggerDefinition = {
     {
       url: process.env.API_URL || 'http://localhost:3000',
       description: 'Development server',
+    },
+    {
+      url: 'http://localhost:3006',
+      description: 'Development server (Docker)',
     },
   ],
   tags: [
@@ -101,14 +94,6 @@ const swaggerDefinition: SwaggerDefinition = {
     {
       name: 'Users',
       description: 'User management operations',
-    },
-    {
-      name: 'Products',
-      description: 'Product management operations',
-    },
-    {
-      name: 'Book',
-      description: 'Book management operations',
     },
   ],
   components: {
@@ -165,67 +150,21 @@ const swaggerDefinition: SwaggerDefinition = {
           },
         },
       },
-      Product: {
+      UpdateUserRequest: {
         type: 'object',
-        required: ['id', 'name', 'createdAt', 'updatedAt'],
-        properties: {
-          id: {
-            type: 'integer',
-            description: 'Unique identifier for the product',
-            example: 1,
-          },
-          name: {
-            type: 'string',
-            description: 'Product name',
-            example: 'Sample Product',
-          },
-          description: {
-            type: 'string',
-            description: 'Product description',
-            example: 'A sample product description',
-            nullable: true,
-          },
-          price: {
-            type: 'number',
-            format: 'float',
-            description: 'Product price',
-            example: 19.99,
-            nullable: true,
-          },
-          createdAt: {
-            type: 'string',
-            format: 'date-time',
-            description: 'Timestamp when the product was created',
-          },
-          updatedAt: {
-            type: 'string',
-            format: 'date-time',
-            description: 'Timestamp when the product was last updated',
-          },
-        },
-      },
-      CreateProductRequest: {
-        type: 'object',
-        required: ['name'],
         properties: {
           name: {
             type: 'string',
             minLength: 1,
             maxLength: 255,
-            description: 'Product name',
-            example: 'New Product',
+            description: 'User full name',
+            example: 'John Doe',
           },
-          description: {
+          email: {
             type: 'string',
-            description: 'Product description',
-            example: 'A new product description',
-          },
-          price: {
-            type: 'number',
-            format: 'float',
-            minimum: 0,
-            description: 'Product price',
-            example: 29.99,
+            format: 'email',
+            description: 'User email address',
+            example: 'john@example.com',
           },
         },
       },
@@ -255,7 +194,7 @@ const swaggerDefinition: SwaggerDefinition = {
           },
         },
       },
-      HealthStatus: {
+      HealthCheck: {
         type: 'object',
         required: ['status', 'timestamp'],
         properties: {
@@ -301,59 +240,7 @@ const swaggerDefinition: SwaggerDefinition = {
           },
         },
       },
-      Book: {
-        type: 'object',
-        required: ['id', 'name', 'createdAt', 'updatedAt'],
-        properties: {
-          id: {
-            type: 'integer',
-            description: 'Unique identifier for the book',
-            example: 1,
-          },
-          name: {
-            type: 'string',
-            description: 'Book name',
-            example: 'Sample Book',
-          },
-          createdAt: {
-            type: 'string',
-            format: 'date-time',
-            description: 'Timestamp when the book was created',
-          },
-          updatedAt: {
-            type: 'string',
-            format: 'date-time',
-            description: 'Timestamp when the book was last updated',
-          },
-        },
-      },
-      CreateBookRequest: {
-        type: 'object',
-        required: ['name'],
-        properties: {
-          name: {
-            type: 'string',
-            minLength: 1,
-            maxLength: 255,
-            description: 'Book name',
-            example: 'New Book',
-          },
-        },
-      },
-      UpdateBookRequest: {
-        type: 'object',
-        properties: {
-          name: {
-            type: 'string',
-            minLength: 1,
-            maxLength: 255,
-            description: 'Book name',
-            example: 'Updated Book',
-          },
-        },
-      },
     },
-
     responses: {
       NotFound: {
         description: 'Resource not found',
@@ -428,51 +315,6 @@ function extractPathsFromHandlers(): OpenAPIPaths {
     paths['/api/v1/users/{id}'] = {
       get: getUserByIdHandler.apiDoc,
     };
-  }
-
-  // Products endpoints
-  if (getProductsHandler.apiDoc || createProductsHandler.apiDoc) {
-    paths['/api/v1/products'] = {};
-    if (getProductsHandler.apiDoc) {
-      paths['/api/v1/products'].get = getProductsHandler.apiDoc;
-    }
-    if (createProductsHandler.apiDoc) {
-      paths['/api/v1/products'].post = createProductsHandler.apiDoc;
-    }
-  }
-
-  if (getProductsByIdHandler.apiDoc) {
-    paths['/api/v1/products/{id}'] = {
-      get: getProductsByIdHandler.apiDoc,
-    };
-  }
-
-  // Book endpoints
-  if (getBookHandler.apiDoc || createBookHandler.apiDoc) {
-    paths['/api/v1/book'] = {};
-    if (getBookHandler.apiDoc) {
-      paths['/api/v1/book'].get = getBookHandler.apiDoc;
-    }
-    if (createBookHandler.apiDoc) {
-      paths['/api/v1/book'].post = createBookHandler.apiDoc;
-    }
-  }
-
-  if (
-    getBookByIdHandler.apiDoc ||
-    updateBookHandler.apiDoc ||
-    deleteBookHandler.apiDoc
-  ) {
-    paths['/api/v1/book/{id}'] = {};
-    if (getBookByIdHandler.apiDoc) {
-      paths['/api/v1/book/{id}'].get = getBookByIdHandler.apiDoc;
-    }
-    if (updateBookHandler.apiDoc) {
-      paths['/api/v1/book/{id}'].put = updateBookHandler.apiDoc;
-    }
-    if (deleteBookHandler.apiDoc) {
-      paths['/api/v1/book/{id}'].delete = deleteBookHandler.apiDoc;
-    }
   }
 
   return paths;

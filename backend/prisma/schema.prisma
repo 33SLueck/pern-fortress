@@ -21,22 +21,3 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
-model Product {
-  id          Int      @id @default(autoincrement())
-  name        String 
-  description String?
-  price       Float?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("products")
-}
-
-model Book {
-  id        Int      @id @default(autoincrement())
-  name      String 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("books")
-}

@@ -10,7 +10,7 @@ services:
     environment:
       - NODE_ENV=development
     volumes:
-      - ./backend/prisma:/app/prisma:ro # Read-only mount für Schema-Änderungen
+      - ./backend/prisma:/app/prisma
 
   frontend:
     build: ./frontend

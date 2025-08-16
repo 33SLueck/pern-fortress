@@ -41,8 +41,8 @@ CMD ["sh", "-c", "\
     echo 'Waiting for database connection...' && \
     timeout 60 sh -c 'until nc -z ${DATABASE_HOST:-db} ${DATABASE_PORT:-5432}; do echo \"Waiting for database...\"; sleep 2; done' && \
     echo 'Database connected successfully!' && \
-    echo 'Running database push to ensure schema is up to date...' && \
-    npx prisma db push --accept-data-loss && \
+    echo 'Running migration deploy to ensure schema is up to date...' && \
+    npx prisma migrate deploy && \
     echo 'Generating Prisma client...' && \
     npx prisma generate && \
     echo 'Starting application server...' && \

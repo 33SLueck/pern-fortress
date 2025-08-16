@@ -11,7 +11,6 @@ export interface ComponentOptions {
 }
 
 const componentTemplate = `import React{{#if useHooks}}, { useState, useEffect }{{/if}} from 'react';
-{{#if hasStyles}}import styles from './{{pascalName}}.module.css';{{/if}}
 
 export interface {{pascalName}}Props {
   /**
@@ -64,8 +63,8 @@ export const {{pascalName}}: React.FC<{{pascalName}}Props> = ({
   {{/if}}
 
   return (
-    <div 
-      className="{{kebabName}}"
+    <div
+      className={className ? '{{kebabName}} ' + className : '{{kebabName}}'}
       {{#if useHooks}}onClick={handleClick}{{else}}onClick={onClick}{{/if}}
       role="button"
       tabIndex={0}
@@ -75,9 +74,8 @@ export const {{pascalName}}: React.FC<{{pascalName}}Props> = ({
         }
       }}
     >
-      <h2>{{#if hasStyles}}\{styles.title}{{else}}{{kebabName}}__title{{/if}}>{title}</h2>
-      
-      <div className="{{#if hasStyles}}\{styles.content}{{else}}{{kebabName}}__content{{/if}}">
+      <h2 className="{{kebabName}}__title">{title}</h2>
+      <div className="{{kebabName}}__content">
         {children || (
           <p>
             This is the {{pascalName}} component.{{#if useHooks}}
@@ -85,9 +83,8 @@ export const {{pascalName}}: React.FC<{{pascalName}}Props> = ({
           </p>
         )}
       </div>
-      
       {{#if useHooks}}
-      <div className="{{#if hasStyles}}\{styles.status}{{else}}{{kebabName}}__status{{/if}}">
+      <div className="{{kebabName}}__status">
         <span>Click to toggle: {isActive ? '✅' : '⭕'}</span>
       </div>
       {{/if}}
@@ -98,57 +95,11 @@ export const {{pascalName}}: React.FC<{{pascalName}}Props> = ({
 export default {{pascalName}};
 `;
 
-const styleTemplate = `.{{camelName}} {
-  padding: 1rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  transition: all 0.2s ease-in-out;
-  cursor: pointer;
-}
-
-.{{camelName}}:hover {
-  border-color: #007bff;
-  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
-}
-
-.{{camelName}}.active {
-  border-color: #28a745;
-  background-color: #f8fff9;
-  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.1);
-}
-
-.title {
-  margin: 0 0 1rem 0;
-  color: #333;
-  font-size: 1.25rem;
-  font-weight: 600;
-}
-
-.content {
-  margin-bottom: 1rem;
-  color: #666;
-  line-height: 1.5;
-}
-
-.status {
-  padding-top: 0.5rem;
-  border-top: 1px solid #e0e0e0;
-  font-size: 0.875rem;
-  color: #888;
-}
-
-.status span {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-`;
-
 const testTemplate = `import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import {{pascalName}} from '../{{pascalName}}';
+import { vi } from 'vitest';
 
 describe('{{pascalName}} Component', () => {
   it('renders with default props', () => {
@@ -224,7 +175,7 @@ describe('{{pascalName}} Component', () => {
   {{/if}}
 
   it('calls onClick handler when provided', () => {
-    const mockClick = jest.fn();
+    const mockClick = vi.fn();
     render(<{{pascalName}} onClick={mockClick} />);
     
     const component = screen.getByRole('button');
@@ -316,7 +267,7 @@ export async function generateComponent(
     directory = 'src/components',
     type = 'functional',
     tests = true,
-    styles = true,
+    styles = false,
   } = options;
 
   // Namen verarbeiten
@@ -332,14 +283,13 @@ export async function generateComponent(
     camelName,
     kebabName,
     useHooks,
-    hasStyles: styles,
   };
 
   // Dateipfade
   const frontendPath = path.join(process.cwd(), 'frontend');
   const componentDir = path.join(frontendPath, directory, pascalName);
   const componentPath = path.join(componentDir, `${pascalName}.tsx`);
-  const stylePath = path.join(componentDir, `${pascalName}.module.css`);
+  // Keine Style-Datei mehr
   const testPath = path.join(componentDir, `${pascalName}.test.tsx`);
   const storyPath = path.join(componentDir, `${pascalName}.stories.tsx`);
   const indexPath = path.join(componentDir, 'index.ts');
@@ -351,12 +301,6 @@ export async function generateComponent(
   const componentCompiled = Handlebars.compile(componentTemplate);
   await fs.writeFile(componentPath, componentCompiled(templateData));
   console.log(chalk.green(`  ✓ Komponente erstellt: ${componentPath}`));
-
-  if (styles) {
-    const styleCompiled = Handlebars.compile(styleTemplate);
-    await fs.writeFile(stylePath, styleCompiled(templateData));
-    console.log(chalk.green(`  ✓ Styles erstellt: ${stylePath}`));
-  }
 
   if (tests) {
     const testCompiled = Handlebars.compile(testTemplate);
