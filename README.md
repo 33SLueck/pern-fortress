@@ -1,10 +1,19 @@
-# PERN-Fortress Monorepo Template 🏰
+# PERN-Fortress Framework 🏰
 
 <!-- License & Repository Info -->
 
 ![GitHub](https://img.shields.io/github/license/33SLueck/Pern-docker-fortress)
 ![GitHub Stars](https://img.shields.io/github/stars/33SLueck/Pern-docker-fortress?style=social)
 ![GitHub Forks](https://img.shields.io/github/forks/33SLueck/Pern-docker-fortress?style=social)
+
+<!-- Framework Shields -->
+
+![Framework](https://img.shields.io/badge/framework-fullstack-blueviolet?logo=castle&logoColor=white)
+![Fortress CLI](https://img.shields.io/badge/cli-fortress%20cli-9cf?logo=terminal&logoColor=white)
+![Swagger/OpenAPI](https://img.shields.io/badge/swagger-openapi%203.0-brightgreen?logo=swagger&logoColor=white)
+![Helmet](https://img.shields.io/badge/helmet.js-security%20headers-yellowgreen?logo=helmet&logoColor=white)
+![CORS](https://img.shields.io/badge/cors-enabled-blue?logo=cors&logoColor=white)
+![Rate Limiting](https://img.shields.io/badge/rate--limiting-ddos%20protection-orange?logo=shield&logoColor=white)
 
 <!-- Tech Stack - PERN Components -->
 
@@ -34,52 +43,57 @@
 ![GitHub Actions](https://img.shields.io/badge/github--actions-CI%2FCD-blue?logo=github-actions&logoColor=white)
 ![CI Status](https://img.shields.io/github/actions/workflow/status/33SLueck/Pern-docker-fortress/ci.yml?branch=main&label=CI&logo=github-actions)
 
-Ein modernes, flexibles PERN Stack Monorepo-Template mit TypeScript, Docker und CI/CD – ready für Production & eigene Projekte!
+**PERN-Fortress ist ein vollwertiges, produktionsreifes Fullstack-Framework** auf Basis des PERN-Stacks (PostgreSQL, Express, React, Node.js) mit TypeScript, Docker und CI/CD. Es bietet weit mehr als ein einfaches Template: Durch die integrierte CLI, automatische Code-Generierung, Security-Best-Practices, OpenAPI/Swagger-Dokumentation und viele weitere Features ist es die ideale Basis für professionelle Projekte und eigene Erweiterungen.
 
 ## ✨ Features
 
 - 🏗️ **Monorepo Architecture** mit npm Workspaces
-- ⚡ **Modern Tech Stack** (React 19, Express 5, TypeScript 5.9+)
-- 🐳 **Docker Ready** mit Multi-stage Builds
+- ⚡ **Modern Fullstack Tech Stack** (React 19, Express 5, TypeScript 5.9+)
+- 🏰 **Integrierte Fortress CLI** – Automatisierte Code-Generierung für Backend, Frontend & Datenbank
+- � **Automatische OpenAPI/Swagger-Dokumentation** – API-Dokumentation & Testing out-of-the-box
+- 🛡️ **Security by Default** – Helmet.js, CORS, Rate Limiting, Input Validation, sichere Error-Handling-Strategien
+- � **Docker Ready** mit Multi-stage Builds
 - 🔄 **Automated CI/CD** mit GitHub Actions
-- 🛡️ **Code Quality Gates** (ESLint, Prettier, Husky)
+- 🧪 **Testing Setup** (Vitest, React Testing Library, Supertest)
+- 🎯 **Production Ready** mit Health Checks, Connection Pooling, Monitoring Hooks
+- 🔨 **Auto-Generated CRUD** – Routes, Models, Components mit einem Befehl
+- 🛡️ **Smart Safety Checks** – Verhindert versehentliches Überschreiben
 - 📦 **Dependency Management** mit Dependabot
-- 🧪 **Testing Setup** (Vitest, React Testing Library)
-- 🎯 **Production Ready** mit Health Checks
-- 🏰 **PERN-Fortress CLI** - Automatischer Code Generator
-- 🔨 **Auto-Generated CRUD** - Routes, Models, Components mit einem Befehl
-- 🛡️ **Smart Safety Checks** - Verhindert versehentliches Überschreiben
+- 📝 **TypeScript überall** – Type Safety für API, DB und UI
 
-## 🏗️ Tech Stack
+## 🏗️ Tech Stack & Framework-Komponenten
 
 ### Frontend
 
-- **React 19** (oder eigene Version) mit TypeScript
+- **React 19** mit TypeScript
 - **Vite** als Build-Tool
 - **Tailwind CSS v4** (optional)
-- **Vitest** für Unit Tests
-- **React Testing Library**
+- **Vitest** & **React Testing Library**
 
 ### Backend
 
-- **Express.js v5** (oder eigene API) mit TypeScript
+- **Express.js v5** mit TypeScript
 - **Node.js** Runtime
-- **PostgreSQL 16** Database
-- **Prisma ORM** für Type-safe Database Access
-- **Prisma Studio** für Database Management
+- **PostgreSQL 16** mit **Prisma ORM**
+- **Prisma Studio** für DB-Management
 - **Express-Validator** für Input-Validierung
-- **Supertest** für API Testing
-- **Vitest** für Backend Testing
-- **Helmet** für Security Headers
+- **Supertest** & **Vitest** für API-Tests
+- **Helmet.js** für Security Headers
 - **CORS** für Cross-Origin Resource Sharing
 - **Express Rate Limit** für DDoS Protection
-- **Swagger/OpenAPI** für API Dokumentation
-- **OpenAPI 3.0** Specification Support
-- RESTful API Architektur
-- Health Check Endpoints
-- Automatische Route-Registrierung
-- Structured Validation Middleware
-- Production-Ready Security
+- **Swagger/OpenAPI** für API-Dokumentation (automatisch generiert)
+- **OpenAPI 3.0** Support
+- **Automatische Route- und Validation-Registrierung**
+- **Production-Ready Security**
+
+### Framework-Features
+
+- **Fortress CLI**: Automatisierte Code-Generierung (CRUD, Models, Components)
+- **Automatische OpenAPI/Swagger-Dokumentation**: Jede Route wird dokumentiert & testbar
+- **Security by Default**: Alle Best-Practices direkt integriert
+- **Automatisierte Validierung**: Input Validation für alle Endpoints
+- **Rate Limiting**: Schutz vor DDoS out-of-the-box
+- **Sicheres Error Handling**: Keine sensiblen Infos im Response
 
 ### Dev Tools
 
@@ -211,6 +225,12 @@ pern-monorepo-template/
 
 ---
 
+## 🏰 Warum ist PERN-Fortress ein Framework?
+
+PERN-Fortress ist **mehr als ein Boilerplate**: Es bietet eine vollständige, automatisierte Entwicklungsumgebung mit CLI, Security, Testing, Dokumentation und Best-Practices. Die Fortress CLI generiert nicht nur Code, sondern integriert neue Features automatisch in die App (z.B. Routen, Validierung, Tests, OpenAPI-Doku). Security-Mechanismen wie Helmet, CORS und Rate Limiting sind standardmäßig aktiv. Die API ist immer dokumentiert und testbar. Damit ist PERN-Fortress ein echtes Framework für produktionsreife Fullstack-Projekte.
+
+---
+
 ## 🏰 PERN-Fortress CLI Generator
 
 Der integrierte **Fortress CLI** automatisiert die Erstellung von Backend-Routes, Prisma-Models und React-Components mit einem einzigen Befehl. Alle generierten Komponenten sind vollständig typisiert und production-ready.
@@ -232,12 +252,12 @@ Der integrierte **Fortress CLI** automatisiert die Erstellung von Backend-Routes
 
 ### 🎯 CLI Features
 
-- **🔄 Automatische Integration**: Routes werden automatisch in `backend/src/index.ts` registriert
-- **🛡️ Input Validierung**: Express-validator mit automatischen Validation-Middleware
-- **🧪 Tests inklusive**: Vitest Tests für alle generierten Routes und Components
-- **📝 TypeScript**: Vollständig typisierte API-Responses und Component-Props
-- **🎨 Styling**: CSS Modules und Storybook Stories für Components
-- **🔒 Safety First**: Prüft auf existierende Dateien und verhindert versehentliches Überschreiben
+- **🔄 Automatische Integration**: Neue Routen, Models und Components werden automatisch registriert
+- **🛡️ Input Validierung**: Jede generierte Route erhält automatisch eine Validation-Middleware
+- **🧪 Tests inklusive**: Für alle generierten Features werden Tests erstellt
+- **📝 TypeScript**: Vollständige Typisierung für API, DB und UI
+- **📚 OpenAPI/Swagger**: Jede Route wird automatisch dokumentiert und ist testbar
+- **🔒 Safety First**: Bestehende Dateien werden nicht überschrieben (außer mit --force)
 
 ### 🔨 Route Generator
 
@@ -323,7 +343,7 @@ Erstellt React Components mit TypeScript und Tests:
 - ✅ Index-Datei für saubere Imports
 - ✅ Responsive Design Patterns
 
-### 🛡️ Safety Features
+### 🛡️ Security & Best Practices (automatisch integriert)
 
 Alle Generatoren prüfen auf bereits existierende Dateien:
 
@@ -501,16 +521,18 @@ npm run backend:test           # Run Backend Tests
 - **Frontend Production** (Docker): <http://localhost:5176>
 - **Backend Production** (Docker): <http://localhost:3006>
 
-### Security Features
+### Security Features (automatisch aktiv)
 
 - **Helmet.js**: Security Headers (XSS, CSRF, etc.)
 - **CORS**: Konfigurierte Cross-Origin Resource Sharing
 - **Rate Limiting**: DDoS Protection mit Express Rate Limit
 - **Input Validation**: Express-validator für alle Endpoints
 - **Type Safety**: TypeScript für Request/Response Typen
+- **Sicheres Error Handling**: Keine sensiblen Infos im Response
 
-### API Documentation Best Practices
+### API Documentation & OpenAPI
 
+- **Automatische Swagger/OpenAPI-Dokumentation** für alle Endpoints
 - **JSDoc Comments** in allen Route-Definitionen
 - **OpenAPI Schemas** für Request/Response Models
 - **Error Response Documentation** mit HTTP Status Codes
@@ -521,9 +543,9 @@ npm run backend:test           # Run Backend Tests
 
 ## 🛡️ Security & Best Practices
 
-### Production-Ready Security
+### Production-Ready Security (Beispiele)
 
-#### Helmet.js Configuration
+#### Helmet.js (Security Headers)
 
 ```javascript
 // Automatisch konfiguriert in express App
@@ -542,7 +564,7 @@ app.use(
 );
 ```
 
-#### CORS Configuration
+#### CORS (Cross-Origin Resource Sharing)
 
 ```javascript
 app.use(
@@ -555,17 +577,15 @@ app.use(
 );
 ```
 
-#### Rate Limiting
+#### Rate Limiting (DDoS Protection)
 
 ```javascript
 const rateLimit = require('express-rate-limit');
-
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 Minuten
   max: 100, // Limit pro IP
   message: 'Too many requests from this IP',
 });
-
 app.use('/api/', limiter);
 ```
 
