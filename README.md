@@ -14,6 +14,8 @@
 ![Helmet](https://img.shields.io/badge/helmet.js-security%20headers-yellowgreen?logo=helmet&logoColor=white)
 ![CORS](https://img.shields.io/badge/cors-enabled-blue?logo=cors&logoColor=white)
 ![Rate Limiting](https://img.shields.io/badge/rate--limiting-ddos%20protection-orange?logo=shield&logoColor=white)
+![Prometheus](https://img.shields.io/badge/prometheus-monitoring-orange?logo=prometheus&logoColor=white)
+![Grafana](https://img.shields.io/badge/grafana-dashboards-orange?logo=grafana&logoColor=white)
 
 <!-- Tech Stack - PERN Components -->
 
@@ -55,6 +57,7 @@
 - � **Docker Ready** mit Multi-stage Builds
 - 🔄 **Automated CI/CD** mit GitHub Actions
 - 🧪 **Testing Setup** (Vitest, React Testing Library, Supertest)
+- 📊 **Monitoring & Dashboards** mit Prometheus & Grafana (Systemmetriken, Visualisierung, Alerting)
 - 🎯 **Production Ready** mit Health Checks, Connection Pooling, Monitoring Hooks
 - 🔨 **Auto-Generated CRUD** – Routes, Models, Components mit einem Befehl
 - 🛡️ **Smart Safety Checks** – Verhindert versehentliches Überschreiben
@@ -86,7 +89,10 @@
 - **Automatische Route- und Validation-Registrierung**
 - **Production-Ready Security**
 
-### Framework-Features
+### Monitoring & Observability
+
+- **Prometheus**: Leistungsfähiges Metrics-Backend für System- und Applikationsmetriken
+- **Grafana**: Visualisierung, Dashboards und Alerting für alle Prometheus-Daten
 
 - **Fortress CLI**: Automatisierte Code-Generierung (CRUD, Models, Components)
 - **Automatische OpenAPI/Swagger-Dokumentation**: Jede Route wird dokumentiert & testbar
