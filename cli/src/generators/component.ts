@@ -10,244 +10,20 @@ export interface ComponentOptions {
   styles?: boolean;
 }
 
-const componentTemplate = `import React{{#if useHooks}}, { useState, useEffect }{{/if}} from 'react';
+const componentTemplate = fs.readFileSync(
+  path.join(__dirname, '../../templates/Component.hbs'),
+  'utf-8'
+);
 
-export interface {{pascalName}}Props {
-  /**
-   * The title to display
-   */
-  title?: string;
-  /**
-   * Additional CSS classes
-   */
-  className?: string;
-  /**
-   * Child components
-   */
-  children?: React.ReactNode;
-  /**
-   * Click handler
-   */
-  onClick?: () => void;
-}
+const testTemplate = fs.readFileSync(
+  path.join(__dirname, '../../templates/Component.test.hbs'),
+  'utf-8'
+);
 
-/**
- * {{pascalName}} Component
- * 
- * @param props - Component props
- * @returns JSX Element
- */
-export const {{pascalName}}: React.FC<{{pascalName}}Props> = ({
-  title = '{{pascalName}}',
-  className = '',
-  children,
-  onClick
-}) => {
-  {{#if useHooks}}
-  const [isActive, setIsActive] = useState(false);
-
-  useEffect(() => {
-    // Component mounted
-    console.log('{{pascalName}} component mounted');
-    
-    return () => {
-      // Cleanup
-      console.log('{{pascalName}} component unmounted');
-    };
-  }, []);
-
-  const handleClick = () => {
-    setIsActive(!isActive);
-    onClick?.();
-  };
-  {{/if}}
-
-  return (
-    <div
-      className={className ? '{{kebabName}} ' + className : '{{kebabName}}'}
-      {{#if useHooks}}onClick={handleClick}{{else}}onClick={onClick}{{/if}}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          {{#if useHooks}}handleClick();{{else}}onClick?.();{{/if}}
-        }
-      }}
-    >
-      <h2 className="{{kebabName}}__title">{title}</h2>
-      <div className="{{kebabName}}__content">
-        {children || (
-          <p>
-            This is the {{pascalName}} component.{{#if useHooks}}
-            Status: {isActive ? 'Active' : 'Inactive'}{{/if}}
-          </p>
-        )}
-      </div>
-      {{#if useHooks}}
-      <div className="{{kebabName}}__status">
-        <span>Click to toggle: {isActive ? '✅' : '⭕'}</span>
-      </div>
-      {{/if}}
-    </div>
-  );
-};
-
-export default {{pascalName}};
-`;
-
-const testTemplate = `import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import {{pascalName}} from '../{{pascalName}}';
-import { vi } from 'vitest';
-
-describe('{{pascalName}} Component', () => {
-  it('renders with default props', () => {
-    render(<{{pascalName}} />);
-    
-    expect(screen.getByText('{{pascalName}}')).toBeInTheDocument();
-    expect(screen.getByText(/This is the {{pascalName}} component/)).toBeInTheDocument();
-  });
-
-  it('renders with custom title', () => {
-    const customTitle = 'Custom Title';
-    render(<{{pascalName}} title={customTitle} />);
-    
-    expect(screen.getByText(customTitle)).toBeInTheDocument();
-  });
-
-  it('renders children when provided', () => {
-    const childText = 'Custom child content';
-    render(
-      <{{pascalName}}>
-        <p>{childText}</p>
-      </{{pascalName}}>
-    );
-    
-    expect(screen.getByText(childText)).toBeInTheDocument();
-    expect(screen.queryByText(/This is the {{pascalName}} component/)).not.toBeInTheDocument();
-  });
-
-  it('applies custom className', () => {
-    const customClass = 'custom-class';
-    render(<{{pascalName}} className={customClass} />);
-    
-    const component = screen.getByRole('button');
-    expect(component).toHaveClass(customClass);
-  });
-
-  {{#if useHooks}}
-  it('toggles active state on click', () => {
-    render(<{{pascalName}} />);
-    
-    const component = screen.getByRole('button');
-    
-    // Initially inactive
-    expect(screen.getByText(/Status: Inactive/)).toBeInTheDocument();
-    expect(screen.getByText(/⭕/)).toBeInTheDocument();
-    
-    // Click to activate
-    fireEvent.click(component);
-    
-    expect(screen.getByText(/Status: Active/)).toBeInTheDocument();
-    expect(screen.getByText(/✅/)).toBeInTheDocument();
-  });
-
-  it('toggles active state on Enter key', () => {
-    render(<{{pascalName}} />);
-    
-    const component = screen.getByRole('button');
-    
-    fireEvent.keyDown(component, { key: 'Enter' });
-    
-    expect(screen.getByText(/Status: Active/)).toBeInTheDocument();
-  });
-
-  it('toggles active state on Space key', () => {
-    render(<{{pascalName}} />);
-    
-    const component = screen.getByRole('button');
-    
-    fireEvent.keyDown(component, { key: ' ' });
-    
-    expect(screen.getByText(/Status: Active/)).toBeInTheDocument();
-  });
-  {{/if}}
-
-  it('calls onClick handler when provided', () => {
-    const mockClick = vi.fn();
-    render(<{{pascalName}} onClick={mockClick} />);
-    
-    const component = screen.getByRole('button');
-    fireEvent.click(component);
-    
-    expect(mockClick).toHaveBeenCalledTimes(1);
-  });
-});
-`;
-
-const storyTemplate = `import type { Meta, StoryObj } from '@storybook/react';
-import {{pascalName}} from './{{pascalName}}';
-
-const meta: Meta<typeof {{pascalName}}> = {
-  title: 'Components/{{pascalName}}',
-  component: {{pascalName}},
-  parameters: {
-    layout: 'centered',
-    docs: {
-      description: {
-        component: 'A reusable {{pascalName}} component with interactive features.',
-      },
-    },
-  },
-  tags: ['autodocs'],
-  argTypes: {
-    title: {
-      control: 'text',
-      description: 'The title to display',
-    },
-    className: {
-      control: 'text',
-      description: 'Additional CSS classes',
-    },
-    onClick: {
-      action: 'clicked',
-      description: 'Click handler function',
-    },
-  },
-};
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Default: Story = {
-  args: {},
-};
-
-export const WithCustomTitle: Story = {
-  args: {
-    title: 'Custom {{pascalName}} Title',
-  },
-};
-
-export const WithChildren: Story = {
-  args: {
-    children: (
-      <div>
-        <p>This is custom content inside the {{pascalName}} component.</p>
-        <button>Custom Button</button>
-      </div>
-    ),
-  },
-};
-
-export const WithCustomClass: Story = {
-  args: {
-    className: 'border-2 border-blue-500',
-    title: 'Styled {{pascalName}}',
-  },
-};
-`;
+const storyTemplate = fs.readFileSync(
+  path.join(__dirname, '../../templates/Component.stories.hbs'),
+  'utf-8'
+);
 
 function toKebabCase(str: string): string {
   return str.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
@@ -290,7 +66,10 @@ export async function generateComponent(
   const componentDir = path.join(frontendPath, directory, pascalName);
   const componentPath = path.join(componentDir, `${pascalName}.tsx`);
   // Keine Style-Datei mehr
-  const testPath = path.join(componentDir, `${pascalName}.test.tsx`);
+  // Test-Datei im src/__tests__-Ordner ablegen
+  const testDir = path.join(frontendPath, 'src', '__tests__');
+  await fs.ensureDir(testDir);
+  const testPath = path.join(testDir, `${pascalName}.test.tsx`);
   const storyPath = path.join(componentDir, `${pascalName}.stories.tsx`);
   const indexPath = path.join(componentDir, 'index.ts');
 

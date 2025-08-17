@@ -1,0 +1,83 @@
+import React{{#if useHooks}}, { useState, useEffect }{{/if}} from 'react';
+
+export interface {{pascalName}}Props {
+  /**
+   * The title to display
+   */
+  title?: string;
+  /**
+   * Additional CSS classes
+   */
+  className?: string;
+  /**
+   * Child components
+   */
+  children?: React.ReactNode;
+  /**
+   * Click handler
+   */
+  onClick?: () => void;
+}
+
+/**
+ * {{pascalName}} Component
+ * 
+ * @param props - Component props
+ * @returns JSX Element
+ */
+export const {{pascalName}}: React.FC<{{pascalName}}Props> = ({
+  title = '{{pascalName}}',
+  className = '',
+  children,
+  onClick
+}) => {
+  {{#if useHooks}}
+  const [isActive, setIsActive] = useState(false);
+
+  useEffect(() => {
+    // Component mounted
+    console.log('{{pascalName}} component mounted');
+    
+    return () => {
+      // Cleanup
+      console.log('{{pascalName}} component unmounted');
+    };
+  }, []);
+
+  const handleClick = () => {
+    setIsActive(!isActive);
+    onClick?.();
+  };
+  {{/if}}
+
+  return (
+    <div
+      className={className ? '{{kebabName}} ' + className : '{{kebabName}}'}
+      {{#if useHooks}}onClick={handleClick}{{else}}onClick={onClick}{{/if}}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          {{#if useHooks}}handleClick();{{else}}onClick?.();{{/if}}
+        }
+      }}
+    >
+      <h2 className="{{kebabName}}__title">{title}</h2>
+      <div className="{{kebabName}}__content">
+        {children || (
+          <p>
+            This is the {{pascalName}} component.{{#if useHooks}}
+            Status: {isActive ? 'Active' : 'Inactive'}{{/if}}
+          </p>
+        )}
+      </div>
+      {{#if useHooks}}
+      <div className="{{kebabName}}__status">
+        <span>Click to toggle: {isActive ? '✅' : '⭕'}</span>
+      </div>
+      {{/if}}
+    </div>
+  );
+};
+
+export default {{pascalName}};

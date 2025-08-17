@@ -14,8 +14,10 @@
 ![Helmet](https://img.shields.io/badge/helmet.js-security%20headers-yellowgreen?logo=helmet&logoColor=white)
 ![CORS](https://img.shields.io/badge/cors-enabled-blue?logo=cors&logoColor=white)
 ![Rate Limiting](https://img.shields.io/badge/rate--limiting-ddos%20protection-orange?logo=shield&logoColor=white)
+
 ![Prometheus](https://img.shields.io/badge/prometheus-monitoring-orange?logo=prometheus&logoColor=white)
 ![Grafana](https://img.shields.io/badge/grafana-dashboards-orange?logo=grafana&logoColor=white)
+![Loki](https://img.shields.io/badge/loki-log%20aggregation-4E9A06?logo=grafana&logoColor=white)
 
 <!-- Tech Stack - PERN Components -->
 
@@ -336,14 +338,11 @@ Erstellt React Components mit TypeScript und Tests:
 # Component ohne Tests
 ./fortress generate:component SimpleCard --no-tests
 
-# Component ohne CSS Modules
-./fortress generate:component BasicCard --no-styles
 ```
 
 **Generiert automatisch:**
 
 - ✅ TypeScript React Component mit Props Interface
-- ✅ CSS Modules für Styling
 - ✅ Vitest Tests mit React Testing Library
 - ✅ Storybook Stories
 - ✅ Index-Datei für saubere Imports

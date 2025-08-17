@@ -5,6 +5,20 @@ import healthRoutes from './routes/health';
 import infoRoutes from './routes/info';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpecs from './config/swagger';
+import winston from 'winston';
+
+// Logger-Konfiguration
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  transports: [new winston.transports.File({ filename: '/app/log/app.log' })],
+});
+
+// Beispiel-Log beim Start
+logger.info('Backend gestartet', { service: 'backend' });
 
 // Swagger setup function - nur für Development
 function setupSwagger(app: Express): void {

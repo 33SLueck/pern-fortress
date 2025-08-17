@@ -105,3 +105,15 @@ Thumbs.db
 prisma/migrations/migration_lock.toml
 
 internal
+
+grafana_data/
+
+# Docker volumes
+postgres_data/
+loki/
+prometheus/
+promtail/
+log/
+
+
+.history/

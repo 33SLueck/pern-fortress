@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import Card from './Card';
+import {{pascalName}} from './{{pascalName}}';
 
-const meta: Meta<typeof Card> = {
-  title: 'Components/Card',
-  component: Card,
+const meta: Meta<typeof {{pascalName}}> = {
+  title: 'Components/{{pascalName}}',
+  component: {{pascalName}},
   parameters: {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A reusable Card component with interactive features.',
+        component: 'A reusable {{pascalName}} component with interactive features.',
       },
     },
   },
@@ -38,7 +38,7 @@ export const Default: Story = {
 
 export const WithCustomTitle: Story = {
   args: {
-    title: 'Custom Card Title',
+    title: 'Custom {{pascalName}} Title',
   },
 };
 
@@ -46,7 +46,7 @@ export const WithChildren: Story = {
   args: {
     children: (
       <div>
-        <p>This is custom content inside the Card component.</p>
+        <p>This is custom content inside the {{pascalName}} component.</p>
         <button>Custom Button</button>
       </div>
     ),
@@ -56,6 +56,6 @@ export const WithChildren: Story = {
 export const WithCustomClass: Story = {
   args: {
     className: 'border-2 border-blue-500',
-    title: 'Styled Card',
+    title: 'Styled {{pascalName}}',
   },
 };
