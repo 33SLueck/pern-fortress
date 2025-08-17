@@ -1,7 +1,11 @@
 # ---- Build Stage ----
 FROM node:20-alpine AS build
 
+
 WORKDIR /app
+
+# Log-Verzeichnis für den Logger anlegen (wichtig für CI und Containerbetrieb)
+RUN mkdir -p /app/log && chmod 777 /app/log
 
 # Nur package.json und package-lock.json kopieren für bessere Caching-Stufen
 COPY package*.json ./
