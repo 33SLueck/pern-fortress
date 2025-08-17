@@ -3,7 +3,11 @@ FROM node:20-alpine AS build
 
 
 
+
 WORKDIR /app
+
+# Setze LOG_DIR für den Container (wird vom Logger genutzt)
+ENV LOG_DIR=/app/log
 
 # Log-Verzeichnis für Build-Stage anlegen (wichtig für Tests und Dev)
 RUN mkdir -p /app/log && chmod 777 /app/log

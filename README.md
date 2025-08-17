@@ -448,6 +448,28 @@ npm run backend:lint     # ESLint Check
 npm run backend:format   # Prettier Format
 ```
 
+---
+
+### Logging & Observability
+
+- **Winston Logger** schreibt alle Backend-Logs in ein konfigurierbares Verzeichnis (`LOG_DIR`).
+- **Promtail** liest diese Logs und leitet sie an **Loki** weiter, sodass sie in **Grafana** visualisiert werden können.
+- Das Log-Verzeichnis ist dynamisch:
+  - Lokal & im CI: Standard ist `./log`
+  - Im Container: `/app/log` (wird automatisch per `LOG_DIR` gesetzt)
+- **Konfiguration:**
+  - Das Log-Verzeichnis kann über die Umgebungsvariable `LOG_DIR` gesetzt werden.
+  - Beispiel (Node.js/TypeScript):
+    ```typescript
+    const logDir = process.env.LOG_DIR || './log'; // Standard: ./log, im Container: /app/log
+    new winston.transports.File({ filename: path.join(logDir, 'app.log') });
+    ```
+  - In Dockerfile und docker-compose wird `LOG_DIR=/app/log` automatisch gesetzt.
+  - Im CI und lokal ist keine Anpassung nötig, es wird automatisch `./log` verwendet.
+- **Hinweis:** Das Log-Verzeichnis wird im CI-Workflow automatisch angelegt, um Permission-Probleme zu vermeiden.
+
+---
+
 ### Docker Compose
 
 ```bash

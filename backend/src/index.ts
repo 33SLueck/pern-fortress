@@ -6,15 +6,19 @@ import infoRoutes from './routes/info';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpecs from './config/swagger';
 import winston from 'winston';
+import path from 'path';
 
-// Logger-Konfiguration
+// Logger-Konfiguration (dynamisches Log-Verzeichnis)
+const logDir = process.env.LOG_DIR || './log'; // Standard: ./log, im Container: /app/log
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.json()
   ),
-  transports: [new winston.transports.File({ filename: '/app/log/app.log' })],
+  transports: [
+    new winston.transports.File({ filename: path.join(logDir, 'app.log') }),
+  ],
 });
 
 // Beispiel-Log beim Start
