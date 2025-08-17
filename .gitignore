@@ -1,3 +1,6 @@
+# Loki Cache: Nur .keep versionieren
+loki/cache/
+!loki/cache/.keep
 # Dependencies
 node_modules/
 **/node_modules/
@@ -114,12 +117,18 @@ prometheus/
 log/
 
 
+
 # Loki und Promtail: Nur Laufzeitdaten ignorieren, nicht die Konfiguration
 loki/chunks/
 loki/index/
 loki/boltdb-shipper/
 loki/wal/
 promtail/log/
+
+# Aber: .keep-Dateien in diesen Ordnern immer versionieren
+!loki/chunks/.keep
+!loki/index/.keep
+!loki/wal/.keep
 
 # Leere .keep-Dateien in den Ordnern lassen, damit die Struktur versioniert bleibt
 
