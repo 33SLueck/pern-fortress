@@ -13,6 +13,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Create log directory
+        run: mkdir -p log
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -49,6 +51,8 @@ jobs:
       - name: Type check frontend
         run: npm run frontend:type-check
 
+      - name: Create log directory
+        run: mkdir -p log
       - name: Test frontend
         run: npm run frontend:test
 
