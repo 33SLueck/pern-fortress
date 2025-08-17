@@ -1,22 +1,5 @@
 # PERN-Fortress Framework 🏰
 
----
-
-## 🚀 Empfohlener Projektstart
-
-1. **Repository vom Template erstellen** (GitHub "Use this template" oder klonen)
-2. **Im Root-Verzeichnis:**
-   - `npm install` ausführen (installiert alle Abhängigkeiten für alle Workspaces)
-   - `.env.example` nach `.env` kopieren und Werte eintragen
-3. **Im backend-Verzeichnis:**
-   - `.env.example` nach `.env` kopieren und Werte eintragen (z. B. Datenbank-URL, Secrets)
-4. **Projekt starten:**
-   - `npm run dev` (für lokalen Start) oder `docker-compose up --build` (für Container)
-
-Damit ist das Framework sofort einsatzbereit – keine weiteren Installationen in den Workspaces nötig!
-
----
-
 <!-- License & Repository Info -->
 
 ![GitHub](https://img.shields.io/github/license/33SLueck/Pern-docker-fortress)
@@ -65,6 +48,23 @@ Damit ist das Framework sofort einsatzbereit – keine weiteren Installationen i
 ![CI Status](https://img.shields.io/github/actions/workflow/status/33SLueck/Pern-docker-fortress/ci.yml?branch=main&label=CI&logo=github-actions)
 
 **PERN-Fortress ist ein vollwertiges, produktionsreifes Fullstack-Framework** auf Basis des PERN-Stacks (PostgreSQL, Express, React, Node.js) mit TypeScript, Docker und CI/CD. Es bietet weit mehr als ein einfaches Template: Durch die integrierte CLI, automatische Code-Generierung, Security-Best-Practices, OpenAPI/Swagger-Dokumentation und viele weitere Features ist es die ideale Basis für professionelle Projekte und eigene Erweiterungen.
+
+---
+
+## 🚀 Empfohlener Projektstart
+
+1. **Repository vom Template erstellen** (GitHub "Use this template" oder klonen)
+2. **Im Root-Verzeichnis:**
+   - `npm install` ausführen (installiert alle Abhängigkeiten für alle Workspaces)
+   - `.env.example` nach `.env` kopieren und Werte eintragen
+3. **Im backend-Verzeichnis:**
+   - `.env.example` nach `.env` kopieren und Werte eintragen (z. B. Datenbank-URL, Secrets)
+4. **Projekt starten:**
+   - `npm run dev` (für lokalen Start) oder `docker-compose up --build` (für Container)
+
+Damit ist das Framework sofort einsatzbereit – keine weiteren Installationen in den Workspaces nötig!
+
+---
 
 ## ✨ Features
 

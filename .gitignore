@@ -110,10 +110,18 @@ grafana_data/
 
 # Docker volumes
 postgres_data/
-loki/
 prometheus/
-promtail/
 log/
+
+
+# Loki und Promtail: Nur Laufzeitdaten ignorieren, nicht die Konfiguration
+loki/chunks/
+loki/index/
+loki/boltdb-shipper/
+loki/wal/
+promtail/log/
+
+# Leere .keep-Dateien in den Ordnern lassen, damit die Struktur versioniert bleibt
 
 
 .history/
