@@ -1,5 +1,22 @@
 # PERN-Fortress Framework 🏰
 
+---
+
+## 🚀 Empfohlener Projektstart
+
+1. **Repository vom Template erstellen** (GitHub "Use this template" oder klonen)
+2. **Im Root-Verzeichnis:**
+   - `npm install` ausführen (installiert alle Abhängigkeiten für alle Workspaces)
+   - `.env.example` nach `.env` kopieren und Werte eintragen
+3. **Im backend-Verzeichnis:**
+   - `.env.example` nach `.env` kopieren und Werte eintragen (z. B. Datenbank-URL, Secrets)
+4. **Projekt starten:**
+   - `npm run dev` (für lokalen Start) oder `docker-compose up --build` (für Container)
+
+Damit ist das Framework sofort einsatzbereit – keine weiteren Installationen in den Workspaces nötig!
+
+---
+
 <!-- License & Repository Info -->
 
 ![GitHub](https://img.shields.io/github/license/33SLueck/Pern-docker-fortress)
