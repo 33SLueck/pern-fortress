@@ -78,16 +78,23 @@ services:
     volumes:
       - ./promtail:/etc/promtail
       - /var/log:/var/log:ro
-    command: -config.file=/etc/promtail/promtail.yaml
+
+  db-backup:
+    image: postgres:16-alpine
     depends_on:
-      - loki
-    restart: always
-  node-exporter:
-    image: prom/node-exporter
-    ports:
-      - '9100:9100'
-    restart: always
+      - db
+    env_file:
+      - .env
+    volumes:
+      - ./db_backups:/backups
+    entrypoint:
+      [
+        'sh',
+        '-c',
+        'pg_dump -h db -U postgres -F c -b -v -f /backups/backup_$(date +%Y%m%d_%H%M%S).dump postgres',
+      ]
 
 volumes:
   postgres_data:
+  db_backups:
   grafana_data:

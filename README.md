@@ -95,13 +95,23 @@
 
 - **Prometheus**: Leistungsfähiges Metrics-Backend für System- und Applikationsmetriken
 - **Grafana**: Visualisierung, Dashboards und Alerting für alle Prometheus-Daten
+- **Loki**: Log-Aggregation und -Visualisierung in Grafana
 
-- **Fortress CLI**: Automatisierte Code-Generierung (CRUD, Models, Components)
-- **Automatische OpenAPI/Swagger-Dokumentation**: Jede Route wird dokumentiert & testbar
-- **Security by Default**: Alle Best-Practices direkt integriert
-- **Automatisierte Validierung**: Input Validation für alle Endpoints
-- **Rate Limiting**: Schutz vor DDoS out-of-the-box
-- **Sicheres Error Handling**: Keine sensiblen Infos im Response
+---
+
+### 🔔 Alerting & Benachrichtigungen (Grafana/Prometheus/Loki)
+
+- E-Mail/SMTP-Settings für Alerting sind bereits in der `.env` und im Compose vorbereitet (siehe Abschnitt `GF_SMTP_*`).
+- Alerts und Benachrichtigungen werden direkt in der Grafana-Oberfläche konfiguriert:
+  - [Grafana Alerting Docs](https://grafana.com/docs/grafana/latest/alerting/)
+  - [Prometheus Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/)
+- Beispiel: In Grafana unter "Alerting" → "Contact points" die SMTP-Daten aus der `.env` eintragen und Alerts für Dashboards/Queries anlegen.
+- Für Slack, Webhook oder andere Kanäle können weitere Contact Points in Grafana ergänzt werden.
+
+**Hinweis:**
+
+- Die konkrete Alert-Logik (z. B. Schwellenwerte, Empfänger) ist projektspezifisch und wird vom Nutzer in Grafana/Prometheus eingerichtet.
+- Das Framework liefert die technische Basis, aber keine vordefinierten Alerts.
 
 ### Dev Tools
 
@@ -170,6 +180,7 @@ docker-compose down
 ## 📁 Projekt Struktur (Template)
 
 ```
+
 pern-monorepo-template/
 ├── README.md
 ├── package.json              # Root package mit Workspace-Scripts
@@ -625,6 +636,41 @@ app.use('/api/', limiter);
 - ✅ **Security Headers** via Helmet.js
 - ✅ **CORS Protection** für Cross-Origin Requests
 
+## 📉 API Rate-Limit-Feedback
+
+Die API setzt automatisch moderne [RateLimit-Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/RateLimit-Limit) nach [IETF-Standard](https://datatracker.ietf.org/doc/html/rfc6585) für alle Endpunkte, die durch express-rate-limit geschützt sind. Diese Header ermöglichen es Clients, ihr Anfrageverhalten dynamisch anzupassen und das aktuelle Limit auszulesen.
+
+**Beispiel-Header in der Response:**
+
+```
+RateLimit-Limit: 100
+RateLimit-Remaining: 99
+RateLimit-Reset: 1692288000
+```
+
+**Client-Beispiel (Fetch/JavaScript):**
+
+```js
+fetch('http://localhost:3006/api/users')
+  .then((res) => {
+    console.log('Limit:', res.headers.get('ratelimit-limit'));
+    console.log('Remaining:', res.headers.get('ratelimit-remaining'));
+    console.log('Reset:', res.headers.get('ratelimit-reset'));
+    return res.json();
+  })
+  .then((data) => {
+    // ...
+  });
+```
+
+**Hinweis:**
+
+- Die Header sind immer klein geschrieben abrufbar (`res.headers.get('ratelimit-limit')`).
+- Die Werte können je nach Konfiguration und Route variieren.
+- Bei Überschreitung des Limits wird ein HTTP 429-Fehler mit passender Fehlermeldung zurückgegeben.
+
+---
+
 ### Production Deployment Checklist
 
 - [ ] Environment Variables konfiguriert (.env files niemals committen)
@@ -732,6 +778,80 @@ main()
 ```bash
 docker-compose run --rm backend npx prisma db seed
 ```
+
+## 🗄️ PostgreSQL Backup & Restore
+
+### Backup (Datenbank sichern)
+
+- Stelle sicher, dass in deiner `.env` steht:
+
+  ```env
+  POSTGRES_PASSWORD=dein_passwort
+  PGPASSWORD=dein_passwort
+  ```
+
+- Backup-Service ist im Compose enthalten:
+
+  ```yaml
+  db-backup:
+    image: postgres:16-alpine
+    depends_on:
+      - db
+    env_file:
+      - .env
+    volumes:
+      - ./db_backups:/backups
+    entrypoint:
+      [
+        'sh',
+        '-c',
+        'pg_dump -h db -U postgres -F c -b -v -f /backups/backup_$(date +%Y%m%d_%H%M%S).dump postgres',
+      ]
+  ```
+
+- Backup erstellen:
+
+  ```bash
+  docker-compose run --rm db-backup
+  # Das Backup findest du in ./db_backups/backup_<datum>.dump
+
+  ```
+
+### Restore (Backup einspielen)
+
+- Stoppe ggf. alle Services, die auf die DB zugreifen.
+- Starte einen temporären Restore-Container:
+
+  ```bash
+  docker-compose run --rm -v $(pwd)/db_backups:/backups --env-file .env postgres:16-alpine \
+    sh -c "pg_restore -h db -U postgres -d postgres -v /backups/backup_<datum>.dump"
+  ```
+
+- Passe ggf. den Datenbanknamen und Benutzer an.
+
+**Hinweis:**
+
+- `PGPASSWORD` muss in der `.env` gesetzt sein, damit das Restore funktioniert.
+- Für produktive Umgebungen empfiehlt sich zusätzlich ein externes Backup (z.B. S3, Rotation, Verschlüsselung).
+
+### 🛡️ Beispiel: Backup per Shellscript (lokal oder als Cronjob)
+
+Im Ordner `scripts/` findest du ein Beispielscript für lokale Backups:
+
+```bash
+./scripts/backup-db.sh
+```
+
+Das Script nutzt Docker Compose und legt Dumps im Verzeichnis `./db_backups` an. Es kann auch als Cronjob genutzt werden, z. B. für tägliche Backups:
+
+```cron
+0 2 * * * /pfad/zu/deinem/projekt/scripts/backup-db.sh
+```
+
+**Hinweis:**
+
+- Passe das Script bei Bedarf an deine Umgebung an (z. B. andere DB-User, Zielverzeichnis).
+- Automatische Backups sind best practice, aber die Integration bleibt flexibel.
 
 ### Prisma Studio
 
@@ -963,3 +1083,5 @@ MIT License – gerne für eigene Projekte verwenden!
 ---
 
 **Template by 33SLueck – Star willkommen!**
+
+---

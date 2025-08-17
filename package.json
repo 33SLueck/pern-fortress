@@ -5,7 +5,8 @@
   "private": true,
   "workspaces": [
     "frontend",
-    "backend"
+    "backend",
+    "cli"
   ],
   "scripts": {
     "postinstall": "husky",
