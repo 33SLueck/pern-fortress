@@ -2,7 +2,11 @@
 FROM node:20-alpine AS build
 
 
+
 WORKDIR /app
+
+# Log-Verzeichnis für Build-Stage anlegen (wichtig für Tests und Dev)
+RUN mkdir -p /app/log && chmod 777 /app/log
 
 # Log-Verzeichnis für den Logger anlegen (wichtig für CI und Containerbetrieb)
 RUN mkdir -p /app/log && chmod 777 /app/log
