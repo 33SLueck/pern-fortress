@@ -2,9 +2,9 @@
 
 <!-- License & Repository Info -->
 
-![GitHub](https://img.shields.io/github/license/33SLueck/Pern-docker-fortress)
-![GitHub Stars](https://img.shields.io/github/stars/33SLueck/Pern-docker-fortress?style=social)
-![GitHub Forks](https://img.shields.io/github/forks/33SLueck/Pern-docker-fortress?style=social)
+![GitHub](https://img.shields.io/github/license/33SLueck/pern-fortress)
+![GitHub Stars](https://img.shields.io/github/stars/33SLueck/pern-fortress?style=social)
+![GitHub Forks](https://img.shields.io/github/forks/33SLueck/pern-fortress?style=social)
 
 <!-- Framework Shields -->
 
@@ -45,7 +45,7 @@
 ![Docker](https://img.shields.io/badge/docker-ready-blue?logo=docker&logoColor=white)
 ![Docker Compose](https://img.shields.io/badge/docker--compose-multi--service-blue?logo=docker&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/github--actions-CI%2FCD-blue?logo=github-actions&logoColor=white)
-![CI Status](https://img.shields.io/github/actions/workflow/status/33SLueck/Pern-docker-fortress/ci.yml?branch=main&label=CI&logo=github-actions)
+![CI Status](https://img.shields.io/github/actions/workflow/status/33SLueck/pern-fortress/ci.yml?branch=main&label=CI&logo=github-actions)
 
 **PERN-Fortress ist ein vollwertiges, produktionsreifes Fullstack-Framework** auf Basis des PERN-Stacks (PostgreSQL, Express, React, Node.js) mit TypeScript, Docker und CI/CD. Es bietet weit mehr als ein einfaches Template: Durch die integrierte CLI, automatische Code-Generierung, Security-Best-Practices, OpenAPI/Swagger-Dokumentation und viele weitere Features ist es die ideale Basis für professionelle Projekte und eigene Erweiterungen.
 
@@ -1073,8 +1073,8 @@ docker-compose up -v ./data:/app/data --build
 
 ```bash
 # Repository klonen
-git clone https://github.com/33SLueck/Pern-docker-fortress.git
-cd Pern-docker-fortress
+git clone https://github.com/33SLueck/pern-fortress.git
+cd pern-fortress
 
 # Dependencies installieren
 npm install
