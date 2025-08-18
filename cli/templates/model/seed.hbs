@@ -1,0 +1,17 @@
+import { PrismaClient } from '@prisma/client'; const prisma = new
+PrismaClient(); export async function seed{{pascalName}}() {
+console.log('Seeding
+{{name}}
+data...'); const sample{{pascalName}}
+= await prisma.{{camelName}}.createMany({ data: [
+{{#each sampleData}}
+  {
+  {{#each this}}
+    {{@key}}:
+    {{#if (isString this)}}'{{this}}'{{else}}{{this}}{{/if}},
+  {{/each}}
+  },
+{{/each}}
+], skipDuplicates: true, }); console.log(`Created ${sample{{pascalName}}.count}
+{{name}}
+records`); return sample{{pascalName}}; }

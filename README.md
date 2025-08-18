@@ -267,9 +267,9 @@ PERN-Fortress ist **mehr als ein Boilerplate**: Es bietet eine vollständige, au
 
 ---
 
-## 🏰 PERN-Fortress CLI Generator
+## 🏰 Fortress CLI: Automatisierung, Custom-Generatoren & Konfiguration
 
-Der integrierte **Fortress CLI** automatisiert die Erstellung von Backend-Routes, Prisma-Models und React-Components mit einem einzigen Befehl. Alle generierten Komponenten sind vollständig typisiert und production-ready.
+Der integrierte **Fortress CLI** automatisiert die Erstellung von Backend-Routes, Prisma-Models und React-Components – und ist vollständig erweiterbar durch eigene Generatoren, Hooks und Templates.
 
 ### ⚡ Quick CLI Start
 
@@ -277,7 +277,7 @@ Der integrierte **Fortress CLI** automatisiert die Erstellung von Backend-Routes
 # CLI verfügbar machen
 ./fortress --help
 
-# Interaktiver Generator (empfohlen für Einsteiger)
+# Interaktiver Generator (empfohlen)
 ./fortress generate
 
 # Direkte Befehle
@@ -286,18 +286,50 @@ Der integrierte **Fortress CLI** automatisiert die Erstellung von Backend-Routes
 ./fortress generate:component ProductCard  # React Component
 ```
 
+### 🧩 CLI-Extensibility: Eigene Generatoren, Hooks & Templates
+
+- **Custom-Generatoren:** Lege eigene Generatoren im `generators/`-Verzeichnis an (z. B. `generators/customComponent.js`). Diese werden automatisch erkannt und stehen als CLI-Befehl zur Verfügung.
+- **User-Templates:** Eigene Handlebars-Templates können im Verzeichnis `.fortress-templates/` abgelegt werden. Sie überschreiben die Default-Templates und ermöglichen volle Anpassung.
+- **Hooks:** Automatisierte Skripte (z. B. Lint, Format, Checks) können im `scripts/`-Verzeichnis als Hooks eingebunden werden. Diese werden nach der Code-Generierung automatisch ausgeführt.
+- **Konfiguration:** Die Datei `fortress.config.js` im Root steuert Templates, Generatoren, Hooks und (optional) Feature-Flags.
+
+**Beispiel: fortress.config.js**
+
+```js
+module.exports = {
+  templatesDir: '.fortress-templates', // User-Templates
+  generators: [
+    './generators/customComponent.js', // Eigener Generator
+    // ...weitere Generatoren
+  ],
+  hooks: [
+    './scripts/check-env.js',
+    './scripts/format.js',
+    // ...weitere Hooks
+  ],
+  // Beispiel für Feature-Flags (werden NICHT automatisch verwendet):
+  // featureFlags: {
+  //   enableI18n: false,
+  //   enableStorybook: true,
+  // },
+};
+```
+
+**Hinweis:** Feature-Flags dienen als Dokumentation und müssen explizit im eigenen Code ausgewertet werden.
+
 ### 🎯 CLI Features
 
-- **🔄 Automatische Integration**: Neue Routen, Models und Components werden automatisch registriert
-- **🛡️ Input Validierung**: Jede generierte Route erhält automatisch eine Validation-Middleware
-- **🧪 Tests inklusive**: Für alle generierten Features werden Tests erstellt
-- **📝 TypeScript**: Vollständige Typisierung für API, DB und UI
-- **📚 OpenAPI/Swagger**: Jede Route wird automatisch dokumentiert und ist testbar
-- **🔒 Safety First**: Bestehende Dateien werden nicht überschrieben (außer mit --force)
+- **🔄 Automatische Integration:** Neue Routen, Models und Components werden automatisch registriert
+- **🛡️ Input Validierung:** Jede generierte Route erhält automatisch eine Validation-Middleware
+- **🧪 Tests inklusive:** Für alle generierten Features werden Tests erstellt
+- **📝 TypeScript:** Vollständige Typisierung für API, DB und UI
+- **📚 OpenAPI/Swagger:** Jede Route wird automatisch dokumentiert und ist testbar
+- **🔒 Safety First:** Bestehende Dateien werden nicht überschrieben (außer mit --force)
+- **🧩 Erweiterbar:** Eigene Generatoren, Templates und Hooks möglich
 
-### 🔨 Route Generator
+### 🔨 Generatoren im Überblick
 
-Erstellt vollständige CRUD-Routes mit automatischer Registrierung:
+#### Route Generator
 
 ```bash
 # Basis Route mit Standard CRUD
@@ -313,22 +345,7 @@ Erstellt vollständige CRUD-Routes mit automatischer Registrierung:
 ./fortress generate:route users --force
 ```
 
-**Generiert automatisch:**
-
-- ✅ Express Router mit CRUD Endpoints (`GET`, `POST`, `PUT`, `DELETE`)
-- ✅ Input Validierung mit express-validator
-- ✅ TypeScript Interfaces für Request/Response
-- ✅ Vitest Tests mit Supertest
-- ✅ Automatische Route-Registrierung in `backend/src/index.ts`
-- ✅ Prisma Model Integration
-- ✅ OpenAPI/Swagger Documentation (JSDoc)
-- ✅ Security Headers (Helmet, CORS)
-- ✅ Rate Limiting Configuration
-- ✅ Error Handling Middleware
-
-### 🗄️ Model Generator
-
-Erstellt Prisma Models mit Migration und Seeding:
+#### Model Generator
 
 ```bash
 # Basis Model
@@ -344,17 +361,7 @@ Erstellt Prisma Models mit Migration und Seeding:
 ./fortress generate:model Basic --no-seed
 ```
 
-**Generiert automatisch:**
-
-- ✅ Prisma Schema Definition
-- ✅ TypeScript Types
-- ✅ Seed-Dateien mit Beispieldaten
-- ✅ Migration Scripts
-- ✅ Automatische Relation-Hints
-
-### 🧩 Component Generator
-
-Erstellt React Components mit TypeScript und Tests:
+#### Component Generator
 
 ```bash
 # React Functional Component
@@ -365,16 +372,7 @@ Erstellt React Components mit TypeScript und Tests:
 
 # Component ohne Tests
 ./fortress generate:component SimpleCard --no-tests
-
 ```
-
-**Generiert automatisch:**
-
-- ✅ TypeScript React Component mit Props Interface
-- ✅ Vitest Tests mit React Testing Library
-- ✅ Storybook Stories
-- ✅ Index-Datei für saubere Imports
-- ✅ Responsive Design Patterns
 
 ### 🛡️ Security & Best Practices (automatisch integriert)
 
@@ -413,8 +411,6 @@ frontend/src/components/ProductCard/
 ```
 
 ### 🔧 CLI Verfügbarkeit
-
-Der Fortress CLI ist auf mehrere Weise verfügbar:
 
 ```bash
 # 1. Direkter Aufruf (empfohlen)

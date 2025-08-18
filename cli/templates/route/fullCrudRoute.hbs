@@ -1,0 +1,567 @@
+import type { Request, Response } from 'express';
+import { Router } from 'express';
+import { PrismaClient } from '@prisma/client';
+import {
+  validateCreate{{pascalName}},
+  validateUpdate{{pascalName}},
+  validateGet{{pascalName}}ById,
+  validatePagination,
+  handleValidationErrors,
+} from '../middleware/validation/';
+
+const router = Router();
+const prisma = new PrismaClient();
+
+interface OpenApiResponse {
+  description: string;
+  content?: {
+    'application/json': {
+      schema: Record<string, unknown>;
+    };
+  };
+}
+
+interface RouteHandler {
+  (req: Request, res: Response): Promise<void>;
+  apiDoc?: {
+    summary: string;
+    description: string;
+    operationId: string;
+    tags: string[];
+    parameters?: Array<{
+      in: string;
+      name: string;
+      required?: boolean;
+      schema: Record<string, unknown>;
+      description: string;
+    }>;
+    requestBody?: {
+      required: boolean;
+      content: {
+        'application/json': {
+          schema: Record<string, unknown>;
+        };
+      };
+    };
+    responses: Record<string, OpenApiResponse>;
+  };
+}
+
+// GET /{{kebabName}} - Get all {{lowerName}}
+export const get{{pascalName}}Handler: RouteHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 10;
+    const offset = parseInt(req.query.offset as string) || 0;
+
+    const {{lowerName}} = await prisma.{{lowerName}}.findMany({
+      take: limit,
+      skip: offset,
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    const total = await prisma.{{lowerName}}.count();
+
+    res.json({
+      data: {{lowerName}},
+      pagination: {
+        total,
+        limit,
+        offset,
+        hasMore: offset + limit < total,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching {{lowerName}}:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+      message: 'Failed to fetch {{lowerName}}',
+      status: 500,
+      timestamp: new Date().toISOString(),
+    });
+  }
+};
+
+get{{pascalName}}Handler.apiDoc = {
+  summary: 'Get all {{lowerName}}',
+  description: 'Retrieve a paginated list of {{lowerName}}',
+  operationId: 'get{{pascalName}}',
+  tags: ['{{pascalName}}'],
+  parameters: [
+    {
+      in: 'query',
+      name: 'limit',
+      required: false,
+      schema: {
+        type: 'integer',
+        minimum: 1,
+        maximum: 100,
+        default: 10,
+      },
+      description: 'Number of items to return',
+    },
+    {
+      in: 'query',
+      name: 'offset',
+      required: false,
+      schema: {
+        type: 'integer',
+        minimum: 0,
+        default: 0,
+      },
+      description: 'Number of items to skip',
+    },
+  ],
+  responses: {
+    '200': {
+      description: 'Successfully retrieved {{lowerName}}',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'array',
+                items: {
+                  $ref: '#/components/schemas/{{pascalNameSingular}}',
+                },
+              },
+              pagination: {
+                type: 'object',
+                properties: {
+                  total: { type: 'integer' },
+                  limit: { type: 'integer' },
+                  offset: { type: 'integer' },
+                  hasMore: { type: 'boolean' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    '500': {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: {
+            $ref: '#/components/schemas/Error',
+          },
+        },
+      },
+    },
+  },
+};
+
+// GET /{{kebabName}}/:id - Get {{lowerName}} by ID
+export const get{{pascalName}}ByIdHandler: RouteHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      res.status(400).json({
+        error: 'Invalid ID',
+        message: 'ID must be a valid number',
+        status: 400,
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    const {{lowerName}} = await prisma.{{lowerName}}.findUnique({
+      where: { id },
+    });
+
+    if (!{{lowerName}}) {
+      res.status(404).json({
+        error: 'Not found',
+        message: '{{pascalName}} not found',
+        status: 404,
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    res.json({{lowerName}});
+  } catch (error) {
+    console.error('Error fetching {{lowerName}}:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+      message: 'Failed to fetch {{lowerName}}',
+      status: 500,
+      timestamp: new Date().toISOString(),
+    });
+  }
+};
+
+get{{pascalName}}ByIdHandler.apiDoc = {
+  summary: 'Get {{lowerName}} by ID',
+  description: 'Retrieve a specific {{lowerName}} by its ID',
+  operationId: 'get{{pascalName}}ById',
+  tags: ['{{pascalName}}'],
+  parameters: [
+    {
+      in: 'path',
+      name: 'id',
+      required: true,
+      schema: {
+        type: 'integer',
+        minimum: 1,
+      },
+      description: '{{pascalName}} ID',
+    },
+  ],
+  responses: {
+    '200': {
+      description: 'Successfully retrieved {{lowerName}}',
+      content: {
+        'application/json': {
+          schema: {
+            $ref: '#/components/schemas/{{pascalNameSingular}}',
+          },
+        },
+      },
+    },
+    '400': {
+      description: 'Invalid ID',
+      content: {
+        'application/json': {
+          schema: {
+            $ref: '#/components/schemas/Error',
+          },
+        },
+      },
+    },
+    '404': {
+      description: '{{pascalName}} not found',
+      content: {
+        'application/json': {
+          schema: {
+            $ref: '#/components/schemas/Error',
+          },
+        },
+      },
+    },
+    '500': {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: {
+            $ref: '#/components/schemas/Error',
+          },
+        },
+      },
+    },
+  },
+};
+
+// POST /{{kebabName}} - Create new {{lowerName}}
+export const create{{pascalName}}Handler: RouteHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const {{lowerName}} = await prisma.{{lowerName}}.create({
+      data: req.body,
+    });
+
+    res.status(201).json({{lowerName}});
+  } catch (error) {
+    console.error('Error creating {{lowerName}}:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+      message: 'Failed to create {{lowerName}}',
+      status: 500,
+      timestamp: new Date().toISOString(),
+    });
+  }
+};
+
+create{{pascalName}}Handler.apiDoc = {
+  summary: 'Create new {{lowerName}}',
+  description: 'Create a new {{lowerName}}',
+  operationId: 'create{{pascalName}}',
+  tags: ['{{pascalName}}'],
+  requestBody: {
+    required: true,
+    content: {
+      'application/json': {
+        schema: {
+          $ref: '#/components/schemas/Create{{pascalName}}Request',
+        },
+      },
+    },
+  },
+  responses: {
+    '201': {
+      description: 'Successfully created {{lowerName}}',
+      content: {
+        'application/json': {
+          schema: {
+            $ref: '#/components/schemas/{{pascalName}}',
+          },
+        },
+      },
+    },
+    '400': {
+      description: 'Validation error',
+      content: {
+        'application/json': {
+          schema: {
+            $ref: '#/components/schemas/Error',
+          },
+        },
+      },
+    },
+    '500': {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: {
+            $ref: '#/components/schemas/Error',
+          },
+        },
+      },
+    },
+  },
+};
+
+// PUT /{{kebabName}}/:id - Update {{lowerName}}
+export const update{{pascalName}}Handler: RouteHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      res.status(400).json({
+        error: 'Invalid ID',
+        message: 'ID must be a valid number',
+        status: 400,
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    // Check if {{lowerName}} exists
+    const existing{{pascalName}} = await prisma.{{lowerName}}.findUnique({
+      where: { id },
+    });
+
+    if (!existing{{pascalName}}) {
+      res.status(404).json({
+        error: 'Not found',
+        message: '{{pascalName}} not found',
+        status: 404,
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    const {{lowerName}} = await prisma.{{lowerName}}.update({
+      where: { id },
+      data: req.body,
+    });
+
+    res.json({{lowerName}});
+  } catch (error) {
+    console.error('Error updating {{lowerName}}:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+      message: 'Failed to update {{lowerName}}',
+      status: 500,
+      timestamp: new Date().toISOString(),
+    });
+  }
+};
+
+update{{pascalName}}Handler.apiDoc = {
+  summary: 'Update {{lowerName}}',
+  description: 'Update an existing {{lowerName}}',
+  operationId: 'update{{pascalName}}',
+  tags: ['{{pascalName}}'],
+  parameters: [
+    {
+      in: 'path',
+      name: 'id',
+      required: true,
+      schema: {
+        type: 'integer',
+        minimum: 1,
+      },
+      description: '{{pascalName}} ID',
+    },
+  ],
+  requestBody: {
+    required: true,
+    content: {
+      'application/json': {
+        schema: {
+          $ref: '#/components/schemas/Update{{pascalName}}Request',
+        },
+      },
+    },
+  },
+  responses: {
+    '200': {
+      description: 'Successfully updated {{lowerName}}',
+      content: {
+        'application/json': {
+          schema: {
+            $ref: '#/components/schemas/{{pascalName}}',
+          },
+        },
+      },
+    },
+    '400': {
+      description: 'Invalid ID or validation error',
+      content: {
+        'application/json': {
+          schema: {
+            $ref: '#/components/schemas/Error',
+          },
+        },
+      },
+    },
+    '404': {
+      description: '{{pascalName}} not found',
+      content: {
+        'application/json': {
+          schema: {
+            $ref: '#/components/schemas/Error',
+          },
+        },
+      },
+    },
+    '500': {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: {
+            $ref: '#/components/schemas/Error',
+          },
+        },
+      },
+    },
+  },
+};
+
+// DELETE /{{kebabName}}/:id - Delete {{lowerName}}
+export const delete{{pascalName}}Handler: RouteHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      res.status(400).json({
+        error: 'Invalid ID',
+        message: 'ID must be a valid number',
+        status: 400,
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    // Check if {{lowerName}} exists
+    const existing{{pascalName}} = await prisma.{{lowerName}}.findUnique({
+      where: { id },
+    });
+
+    if (!existing{{pascalName}}) {
+      res.status(404).json({
+        error: 'Not found',
+        message: '{{pascalName}} not found',
+        status: 404,
+        timestamp: new Date().toISOString(),
+      });
+      return;
+    }
+
+    await prisma.{{lowerName}}.delete({
+      where: { id },
+    });
+
+    res.status(204).send();
+  } catch (error) {
+    console.error('Error deleting {{lowerName}}:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+      message: 'Failed to delete {{lowerName}}',
+      status: 500,
+      timestamp: new Date().toISOString(),
+    });
+  }
+};
+
+delete{{pascalName}}Handler.apiDoc = {
+  summary: 'Delete {{lowerName}}',
+  description: 'Delete an existing {{lowerName}}',
+  operationId: 'delete{{pascalName}}',
+  tags: ['{{pascalName}}'],
+  parameters: [
+    {
+      in: 'path',
+      name: 'id',
+      required: true,
+      schema: {
+        type: 'integer',
+        minimum: 1,
+      },
+      description: '{{pascalName}} ID',
+    },
+  ],
+  responses: {
+    '204': {
+      description: 'Successfully deleted {{lowerName}}',
+    },
+    '400': {
+      description: 'Invalid ID',
+      content: {
+        'application/json': {
+          schema: {
+            $ref: '#/components/schemas/Error',
+          },
+        },
+      },
+    },
+    '404': {
+      description: '{{pascalName}} not found',
+      content: {
+        'application/json': {
+          schema: {
+            $ref: '#/components/schemas/Error',
+          },
+        },
+      },
+    },
+    '500': {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: {
+            $ref: '#/components/schemas/Error',
+          },
+        },
+      },
+    },
+  },
+};
+
+// Routes
+router.get('/', validatePagination, handleValidationErrors, get{{pascalName}}Handler);
+router.get('/:id', validateGet{{pascalName}}ById, handleValidationErrors, get{{pascalName}}ByIdHandler);
+router.post('/', validateCreate{{pascalName}}, handleValidationErrors, create{{pascalName}}Handler);
+router.put('/:id', validateUpdate{{pascalName}}, handleValidationErrors, update{{pascalName}}Handler);
+router.delete('/:id', validateGet{{pascalName}}ById, handleValidationErrors, delete{{pascalName}}Handler);
+
+export default router;

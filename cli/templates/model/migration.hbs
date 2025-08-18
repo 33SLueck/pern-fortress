@@ -1,0 +1,16 @@
+-- CreateTable
+CREATE TABLE "{{tableName}}" (
+    "id" SERIAL NOT NULL,
+    {{#each fields}}
+    "{{name}}" {{sqlType}}{{#if required}} NOT NULL{{/if}},
+    {{/each}}
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "{{tableName}}_pkey" PRIMARY KEY ("id")
+);
+
+{{#each uniqueFields}}
+-- CreateIndex
+CREATE UNIQUE INDEX "{{../tableName}}_{{name}}_key" ON "{{../tableName}}"("{{name}}");
+{{/each}}

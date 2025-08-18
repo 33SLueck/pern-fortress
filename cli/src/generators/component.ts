@@ -11,17 +11,17 @@ export interface ComponentOptions {
 }
 
 const componentTemplate = fs.readFileSync(
-  path.join(__dirname, '../../templates/Component.hbs'),
+  path.join(__dirname, '../../templates/component/Component.hbs'),
   'utf-8'
 );
 
 const testTemplate = fs.readFileSync(
-  path.join(__dirname, '../../templates/Component.test.hbs'),
+  path.join(__dirname, '../../templates/component/Component.test.hbs'),
   'utf-8'
 );
 
 const storyTemplate = fs.readFileSync(
-  path.join(__dirname, '../../templates/Component.stories.hbs'),
+  path.join(__dirname, '../../templates/component/Component.stories.hbs'),
   'utf-8'
 );
 

@@ -114,7 +114,10 @@ grafana_data/
 # Docker volumes
 postgres_data/
 prometheus/
+
+# Log-Ordner: Nur .keep versionieren, alle anderen Dateien ignorieren
 log/
+!log/.keep
 
 
 

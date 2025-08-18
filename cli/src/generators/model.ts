@@ -12,63 +12,13 @@ export interface ModelOptions {
   seed?: boolean;
 }
 
-const modelTemplate = `// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-model {{pascalName}} {
-  id        Int      @id @default(autoincrement())
-  {{#each fields}}
-  {{name}}  {{type}}{{#if required}} {{/if}}{{#if unique}} @unique{{/if}}
-  {{/each}}
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("{{tableName}}")
+// Utility to load a Handlebars template from file
+async function loadTemplateFromFile(
+  templatePath: string
+): Promise<Handlebars.TemplateDelegate> {
+  const source = await fs.readFile(templatePath, 'utf-8');
+  return Handlebars.compile(source);
 }
-`;
-
-const seedTemplate = `import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
-export async function seed{{pascalName}}() {
-  console.log('Seeding {{name}} data...');
-
-  const sample{{pascalName}} = await prisma.{{camelName}}.createMany({
-    data: [
-      {{#each sampleData}}
-      {
-        {{#each this}}
-        {{@key}}: {{#if (isString this)}}'{{this}}'{{else}}{{this}}{{/if}},
-        {{/each}}
-      },
-      {{/each}}
-    ],
-    skipDuplicates: true,
-  });
-
-  console.log(\`Created \${sample{{pascalName}}.count} {{name}} records\`);
-  return sample{{pascalName}};
-}
-`;
-
-const migrationTemplate = `-- CreateTable
-CREATE TABLE "{{tableName}}" (
-    "id" SERIAL NOT NULL,
-    {{#each fields}}
-    "{{name}}" {{sqlType}}{{#if required}} NOT NULL{{/if}},
-    {{/each}}
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "{{tableName}}_pkey" PRIMARY KEY ("id")
-);
-
-{{#each uniqueFields}}
--- CreateIndex
-CREATE UNIQUE INDEX "{{../tableName}}_{{name}}_key" ON "{{../tableName}}"("{{name}}");
-{{/each}}
-`;
 
 // Handlebars Helpers
 Handlebars.registerHelper('isString', function (value) {
@@ -234,10 +184,24 @@ export async function generateModel(
     `${name.toLowerCase()}.ts`
   );
 
+  // Load template files
+  const modelTemplatePath = path.join(
+    __dirname,
+    '../../templates/model/model.hbs'
+  );
+  const seedTemplatePath = path.join(
+    __dirname,
+    '../../templates/model/seed.hbs'
+  );
+  const migrationTemplatePath = path.join(
+    __dirname,
+    '../../templates/model/migration.hbs'
+  );
+
   // Schema erweitern
   if (await fs.pathExists(schemaPath)) {
     const schemaContent = await fs.readFile(schemaPath, 'utf-8');
-    const modelCompiled = Handlebars.compile(modelTemplate);
+    const modelCompiled = await loadTemplateFromFile(modelTemplatePath);
     const newModel = modelCompiled(templateData);
 
     await fs.writeFile(schemaPath, schemaContent + '\n\n' + newModel);
@@ -249,10 +213,12 @@ export async function generateModel(
   // Seed-Datei erstellen
   if (seed) {
     await fs.ensureDir(path.dirname(seedPath));
-    const seedCompiled = Handlebars.compile(seedTemplate);
+    const seedCompiled = await loadTemplateFromFile(seedTemplatePath);
     await fs.writeFile(seedPath, seedCompiled(templateData));
     console.log(chalk.green(`  ✓ Seed-Datei erstellt: ${seedPath}`));
   }
+
+  // Migration template is loaded but not used directly here (for future use)
 
   // Migration und Prisma Client automatisch ausführen? (Optional)
   if (migration) {

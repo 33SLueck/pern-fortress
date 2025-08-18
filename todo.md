@@ -7,7 +7,7 @@
 - [ ] **Logging**: Erweiterte Alerting- und Query-Templates für Loki/Grafana bereitstellen
 - [ ] **Cloud-Deployment**: Beispiele für Kubernetes, Helm-Charts, Cloud-Provider (AWS/GCP/Azure) ergänzen
 - [x] **Backup/Restore**: Automatisierte Backup-Strategien für Datenbank & Volumes dokumentieren
-- [ ] **CLI-Extensibility**: Custom Templates, eigene Generatoren, Hooks ermöglichen (z.B. für Komponenten, Models, Routen)
+- [x] **CLI-Extensibility**: Custom Templates, eigene Generatoren, Hooks ermöglichen (z.B. für Komponenten, Models, Routen)
 - [x] **API Rate-Limit-Feedback**: Rate-Limit-Informationen in API-Responses zurückgeben
 - [ ] **Mehrsprachigkeit**: Optionale i18n-Unterstützung für Frontend/Backend anbieten
 - [ ] **Onboarding**: Interaktive Tutorials, Video-Guides, Troubleshooting-Section erstellen
