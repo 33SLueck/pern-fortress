@@ -114,9 +114,9 @@ Damit ist das Framework sofort einsatzbereit – keine weiteren Installationen i
 - **Grafana**: Visualisierung, Dashboards und Alerting für alle Prometheus-Daten
 - **Loki**: Log-Aggregation und -Visualisierung in Grafana
 
-#### ⚠️ Troubleshooting: node-exporter liefert keine Systemmetriken?
+#### ⚠️ Troubleshooting: node-exporter liefert keine Systemmetriken oder meldet Fehler beim Docker-Start?
 
-Falls im Monitoring-Stack (Prometheus/Grafana) keine Systemmetriken vom Host angezeigt werden (z. B. node-exporter zeigt keine CPU/RAM-Daten), kann es an fehlenden Shared-Mounts im Docker-Setup liegen. In diesem Fall hilft folgender Workaround (einmalig auf dem Host ausführen):
+Falls beim Starten von Docker (z. B. `docker-compose up --build`) bereits eine Fehlermeldung bezüglich "mount propagation" oder fehlender Systemmetriken erscheint, oder im Monitoring-Stack (Prometheus/Grafana) keine Systemmetriken vom Host angezeigt werden (z. B. node-exporter zeigt keine CPU/RAM-Daten), kann es an fehlenden Shared-Mounts im Docker-Setup liegen. In diesem Fall hilft folgender Workaround (einmalig auf dem Host ausführen):
 
 ```bash
 sudo mount --make-shared /
@@ -125,6 +125,7 @@ sudo mount --make-shared /
 **Hinweis:**
 
 - Dieser Befehl ist auf modernen Linux-Distributionen sicher und ändert die Mount-Propagation für das Root-Dateisystem, sodass node-exporter und Promtail korrekt auf Host-Metriken zugreifen können.
+- Falls der Fehler nach dem ersten Versuch weiterhin auftritt, führe den Befehl ggf. ein zweites Mal aus.
 - Nach einem Reboot ggf. erneut ausführen, falls das Problem wieder auftritt.
 - Weitere Details und Hintergründe siehe [Prometheus/node-exporter FAQ](https://github.com/prometheus/node_exporter#using-docker).
 
