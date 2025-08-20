@@ -5,6 +5,7 @@
 - [x] **Monitoring/Observability**: Prometheus, Grafana & Loki für Metriken, Dashboards & zentrale Logs integriert
 - [x] **Alerting/Notification**: Alert-Routing, E-Mail/SMS/Slack-Integration für Alerts in Grafana/Loki/Prometheus
 - [ ] **Logging**: Erweiterte Alerting- und Query-Templates für Loki/Grafana bereitstellen
+- [ ] **E2E-Tests** mit Playwright einführen (empfohlen für moderne TypeScript/JS-Projekte, Multi-Browser, CI-ready)
 - [ ] **Cloud-Deployment**: Beispiele für Kubernetes, Helm-Charts, Cloud-Provider (AWS/GCP/Azure) ergänzen
 - [x] **Backup/Restore**: Automatisierte Backup-Strategien für Datenbank & Volumes dokumentieren
 - [x] **CLI-Extensibility**: Custom Templates, eigene Generatoren, Hooks ermöglichen (z.B. für Komponenten, Models, Routen)

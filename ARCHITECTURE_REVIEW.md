@@ -1,3 +1,27 @@
+# Update 20.08.2025: Generatoren, Templates & Bugfixes
+
+## Generator- und Template-Architektur
+
+- CLI-Generatoren unterstützen Default-Export (TS/JS) und Custom-Generatoren (z. B. `customComponent.js`).
+- Handlebars-Templates für Models, Komponenten etc. liegen in `cli/templates/` und können überschrieben werden.
+- Beispiel für Custom-Generator: Siehe `generators/customComponent.js` – nutzt Fortress-API (`writeFile`, `templateData`, etc.) und kann beliebige Templates verwenden.
+
+## Bugfixes & Best Practices
+
+- Prisma Model-Generator: Template (`model.hbs`) gibt Felder jetzt immer korrekt formatiert und eingerückt aus.
+- Nachbearbeitung im Generator entfernt nur noch fehlerhafte `model`-Reste, lässt aber das eigentliche Schlüsselwort und die Felddefinitionen unberührt.
+- CLI lädt Generatoren als Default-Export oder CommonJS, übergibt `name` und `options` explizit.
+- Custom Templates werden über `templatesDir` geladen und können projektweit angepasst werden.
+
+## Hinweise & Empfehlungen
+
+- Nach Generator-Lauf immer auf korrekte Einrückung und Felddefinitionen im Prisma-Schema achten.
+- Templates: Immer auf Zeilenumbrüche und Einrückung achten, da Handlebars keine automatische Formatierung erzwingt.
+- Custom-Generatoren: Müssen als Default-Export (ESM/TS) oder als `module.exports` (CommonJS) bereitgestellt werden.
+- Automatisierte Template-Validierung und mehr Tests für Generatoren empfohlen.
+
+---
+
 # PERN-Fortress Architektur- und Code-Review (Stand: 15.08.2025)
 
 ## Bewertungssystem
