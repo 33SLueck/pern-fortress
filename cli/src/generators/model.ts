@@ -12,6 +12,7 @@ export interface ModelOptions {
   seed?: boolean;
 }
 
+export default generateModel;
 // Utility to load a Handlebars template from file
 async function loadTemplateFromFile(
   templatePath: string
@@ -200,9 +201,27 @@ export async function generateModel(
 
   // Schema erweitern
   if (await fs.pathExists(schemaPath)) {
-    const schemaContent = await fs.readFile(schemaPath, 'utf-8');
+    let schemaContent = await fs.readFile(schemaPath, 'utf-8');
     const modelCompiled = await loadTemplateFromFile(modelTemplatePath);
-    const newModel = modelCompiled(templateData);
+    let newModel = modelCompiled(templateData);
+
+    // Prüfung auf vorhandenes Modell
+    if (schemaContent.includes(`model ${pascalName} {`)) {
+      console.log(
+        chalk.yellow(`Model ${pascalName} existiert bereits im Schema.`)
+      );
+      return;
+    }
+
+    // Formatierungsfix für Kommentare und Modellattribute
+    // Kommentare mit // am Zeilenanfang
+    newModel = newModel.replace(/^(?!\s*\/\/)(.*https?:\/\/.*)$/gm, '// $1');
+    // Modellattribute und @@map immer mit Zeilenumbruch
+    newModel = newModel.replace(
+      /(\w+\s+\w+\s*@.*?)(\s+)(\w+\s+\w+\s*@.*?)/g,
+      '$1\n  $3'
+    );
+    newModel = newModel.replace(/(@@map\(.*?\))/g, '\n  $1');
 
     await fs.writeFile(schemaPath, schemaContent + '\n\n' + newModel);
     console.log(chalk.green(`  ✓ Model zu Schema hinzugefügt: ${schemaPath}`));

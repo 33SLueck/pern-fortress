@@ -12,6 +12,7 @@ export interface RouteOptions {
   swagger?: boolean;
 }
 
+export default generateRoute;
 // Register Handlebars helpers
 Handlebars.registerHelper('eq', function (a: unknown, b: unknown) {
   return a === b;

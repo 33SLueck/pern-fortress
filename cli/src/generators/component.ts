@@ -10,6 +10,7 @@ export interface ComponentOptions {
   styles?: boolean;
 }
 
+export default generateComponent;
 const componentTemplate = fs.readFileSync(
   path.join(__dirname, '../../templates/component/Component.hbs'),
   'utf-8'

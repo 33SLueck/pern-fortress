@@ -101,13 +101,12 @@ async function main() {
         }
         const generatorModule = require(generatorPath);
         const generatorFn = generatorModule.default || generatorModule;
-        // Prepare templateData (expandierbar)
-        const templateData = { name, ...rest };
-        // Call generator
-        await generatorFn({
-          name,
-          options: { ...fortressConfig, ...argv, templatesDir, template },
-          templateData,
+        // Call generator (name als String, options als Objekt)
+        await generatorFn(name, {
+          ...fortressConfig,
+          ...argv,
+          templatesDir,
+          template,
           writeFile,
         });
         // Run afterGenerate hooks
