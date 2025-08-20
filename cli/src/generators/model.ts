@@ -223,6 +223,12 @@ export async function generateModel(
     );
     newModel = newModel.replace(/(@@map\(.*?\))/g, '\n  $1');
 
+    // Entferne 'model' nur am Zeilenende von Kommentaren
+    newModel = newModel.replace(/(\/\/.*) model\s*$/gm, '$1');
+
+    // Ersetze Zeile mit nur Modellnamen + { durch 'model Name {'
+    newModel = newModel.replace(/^(\s*)([A-Z][A-Za-z0-9_]*)\s*\n\{/m, '$1model $2 {');
+
     await fs.writeFile(schemaPath, schemaContent + '\n\n' + newModel);
     console.log(chalk.green(`  ✓ Model zu Schema hinzugefügt: ${schemaPath}`));
   } else {

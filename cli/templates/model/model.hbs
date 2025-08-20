@@ -1,10 +1,9 @@
-// This is your Prisma schema file, // learn more about it in the docs:
-https://pris.ly/d/prisma-schema model
-{{pascalName}}
-{ id Int @id @default(autoincrement())
+model {{pascalName}} {
+  id        Int      @id @default(autoincrement())
 {{#each fields}}
-  {{name}}
-  {{type}}{{#if required}}{{/if}}{{#if unique}} @unique{{/if}}
+  {{name}}  {{type}}{{#unless required}}?{{/unless}}{{#if unique}} @unique{{/if}}
 {{/each}}
-createdAt DateTime @default(now()) updatedAt DateTime @updatedAt @@map("{{tableName}}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@map("{{tableName}}")
 }

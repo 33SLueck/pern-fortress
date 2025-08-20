@@ -54,6 +54,13 @@ import {
   getUserByIdHandler,
   createUserHandler,
 } from '../routes/users';
+import {
+  getTestHandler,
+  getTestByIdHandler,
+  createTestHandler,
+  updateTestHandler,
+  deleteTestHandler,
+} from '../routes/test';
 
 const swaggerDefinition: SwaggerDefinition = {
   openapi: '3.0.0',
@@ -94,6 +101,10 @@ const swaggerDefinition: SwaggerDefinition = {
     {
       name: 'Users',
       description: 'User management operations',
+    },
+    {
+      name: 'Test',
+      description: 'Test management operations',
     },
   ],
   components: {
@@ -241,6 +252,58 @@ const swaggerDefinition: SwaggerDefinition = {
         },
       },
     },
+    Test: {
+      type: 'object',
+      required: ['id', 'name', 'createdAt', 'updatedAt'],
+      properties: {
+        id: {
+          type: 'integer',
+          description: 'Unique identifier for the test',
+          example: 1,
+        },
+        name: {
+          type: 'string',
+          description: 'Test name',
+          example: 'Sample Test',
+        },
+        createdAt: {
+          type: 'string',
+          format: 'date-time',
+          description: 'Timestamp when the test was created',
+        },
+        updatedAt: {
+          type: 'string',
+          format: 'date-time',
+          description: 'Timestamp when the test was last updated',
+        },
+      },
+    },
+    CreateTestRequest: {
+      type: 'object',
+      required: ['name'],
+      properties: {
+        name: {
+          type: 'string',
+          minLength: 1,
+          maxLength: 255,
+          description: 'Test name',
+          example: 'New Test',
+        },
+      },
+    },
+    UpdateTestRequest: {
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string',
+          minLength: 1,
+          maxLength: 255,
+          description: 'Test name',
+          example: 'Updated Test',
+        },
+      },
+    },
+
     responses: {
       NotFound: {
         description: 'Resource not found',
@@ -315,6 +378,34 @@ function extractPathsFromHandlers(): OpenAPIPaths {
     paths['/api/v1/users/{id}'] = {
       get: getUserByIdHandler.apiDoc,
     };
+  }
+
+  // Test endpoints
+  if (getTestHandler.apiDoc || createTestHandler.apiDoc) {
+    paths['/api/v1/test'] = {};
+    if (getTestHandler.apiDoc) {
+      paths['/api/v1/test'].get = getTestHandler.apiDoc;
+    }
+    if (createTestHandler.apiDoc) {
+      paths['/api/v1/test'].post = createTestHandler.apiDoc;
+    }
+  }
+
+  if (
+    getTestByIdHandler.apiDoc ||
+    updateTestHandler.apiDoc ||
+    deleteTestHandler.apiDoc
+  ) {
+    paths['/api/v1/test/{id}'] = {};
+    if (getTestByIdHandler.apiDoc) {
+      paths['/api/v1/test/{id}'].get = getTestByIdHandler.apiDoc;
+    }
+    if (updateTestHandler.apiDoc) {
+      paths['/api/v1/test/{id}'].put = updateTestHandler.apiDoc;
+    }
+    if (deleteTestHandler.apiDoc) {
+      paths['/api/v1/test/{id}'].delete = deleteTestHandler.apiDoc;
+    }
   }
 
   return paths;

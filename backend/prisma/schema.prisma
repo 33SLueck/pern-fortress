@@ -21,3 +21,15 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
+
+
+// This is your Prisma schema file, // learn more about it in the docs:
+// https://pris.ly/d/prisma-schema
+
+model Test {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@map("tests")
+}
