@@ -99,7 +99,8 @@ async function main() {
           console.error('[fortress] Generator-Pfad ist nicht definiert.');
           process.exit(1);
         }
-        const generatorFn = require(generatorPath);
+        const generatorModule = require(generatorPath);
+        const generatorFn = generatorModule.default || generatorModule;
         // Prepare templateData (expandierbar)
         const templateData = { name, ...rest };
         // Call generator
@@ -118,3 +119,8 @@ async function main() {
     .strict()
     .parse();
 }
+
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});
