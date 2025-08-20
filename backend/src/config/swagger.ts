@@ -54,13 +54,6 @@ import {
   getUserByIdHandler,
   createUserHandler,
 } from '../routes/users';
-import {
-  getTestHandler,
-  getTestByIdHandler,
-  createTestHandler,
-  updateTestHandler,
-  deleteTestHandler,
-} from '../routes/test';
 
 const swaggerDefinition: SwaggerDefinition = {
   openapi: '3.0.0',
@@ -378,34 +371,6 @@ function extractPathsFromHandlers(): OpenAPIPaths {
     paths['/api/v1/users/{id}'] = {
       get: getUserByIdHandler.apiDoc,
     };
-  }
-
-  // Test endpoints
-  if (getTestHandler.apiDoc || createTestHandler.apiDoc) {
-    paths['/api/v1/test'] = {};
-    if (getTestHandler.apiDoc) {
-      paths['/api/v1/test'].get = getTestHandler.apiDoc;
-    }
-    if (createTestHandler.apiDoc) {
-      paths['/api/v1/test'].post = createTestHandler.apiDoc;
-    }
-  }
-
-  if (
-    getTestByIdHandler.apiDoc ||
-    updateTestHandler.apiDoc ||
-    deleteTestHandler.apiDoc
-  ) {
-    paths['/api/v1/test/{id}'] = {};
-    if (getTestByIdHandler.apiDoc) {
-      paths['/api/v1/test/{id}'].get = getTestByIdHandler.apiDoc;
-    }
-    if (updateTestHandler.apiDoc) {
-      paths['/api/v1/test/{id}'].put = updateTestHandler.apiDoc;
-    }
-    if (deleteTestHandler.apiDoc) {
-      paths['/api/v1/test/{id}'].delete = deleteTestHandler.apiDoc;
-    }
   }
 
   return paths;

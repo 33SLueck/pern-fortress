@@ -3,7 +3,6 @@ import { configureSecurity, setSecurityHeaders } from './config/security';
 import userRoutes from './routes/users';
 import healthRoutes from './routes/health';
 import infoRoutes from './routes/info';
-import testRoutes from './routes/test';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpecs from './config/swagger';
 import winston from 'winston';
@@ -80,7 +79,6 @@ app.use('/', infoRoutes);
 // API v1 Routes
 app.use('/api/v1/health', healthRoutes);
 app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/test', testRoutes);
 // Start server
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
